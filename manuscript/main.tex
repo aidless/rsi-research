@@ -1,0 +1,151 @@
+% Bi-Level PEPA paper — Main LaTeX wrapper
+% This version uses fully formatted LaTeX for all 7 sections
+
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[preprint]{tmlr}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+% lmodern loaded by tmlr.sty
+\usepackage{amsmath,amssymb,amsthm}
+% page geometry handled by tmlr.sty
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\emergencystretch=3em
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Assumption}
+\newtheorem{corollary}{Corollary}
+\newtheorem{conjecture}{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue}
+
+% arXiv versioning macro
+\newcommand{\arxivstamp}{[anonymized for double-blind review]}
+\newcommand{\orcid}[1]{\textcircled{\scriptsize #1}}
+
+\title{\textbf{Auditable Recursive Self-Improvement:\\[0.2em]
+       A PDP-style Formal Framework for Bi-Level Agent Systems}}
+
+\author{Zewen Liu \\ Independent Researcher \\ \texttt{17353895263@163.com} \\ \small code at https://github.com/aidless/bi-level-pepa}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\setcounter{tocdepth}{2}
+%% Reset subsection numbering at each section
+\makeatletter
+\let\oldsection\section
+\renewcommand{\section}[1]{\oldsection{#1}\setcounter{subsection}{0}}
+\makeatother
+
+
+\begin{abstract}
+\noindent Bi-level recursive self-improvement (RSI) systems, in which an outer-loop agent rewrites the code of an inner-loop agent under a private-score selection pressure, have emerged as a candidate pathway toward automated R\&D. We argue that the literature lacks a formal framework for the \emph{audit channel} that mediates between inner-loop optimization signal and outer-loop selection signal. We propose \textbf{Bi-Level PEPA} (Policy-Evaluation Pair Automaton), grounded in the PDP/PEP/PAP vocabulary from enterprise access control, that makes the audit channel a first-class object. The framework yields three falsifiable predictions: (P1) a measurement-noise lower bound for ignition tests; (P2) the necessity of an ungameable private score for Level-2 RSI; (P3) the equivalence between emergent anti-reward-hacking behaviors and evolution of audit-channel capacity. We instantiate the framework on AIDE\textsuperscript{2} (Weco AI, 2026) and provide a reference implementation of the P2 meta-predictor test that, on synthetic data calibrated to AIDE\textsuperscript{2}'s reported statistics and evaluated across 5 model classes (Linear, Ridge, Random Forest, Gradient Boosting, MLP) with 10-fold cross-validation (n = 1000 agents for the robustness table), achieves mean test $\text{AUC} = 0.9957 \pm 0.0027$ (linear) and $0.9951 \pm 0.0031$ (gradient boosting) --- far above the §3.4 P2 falsification threshold of $0.7$ on synthetic calibration. This demonstrates that the predictability is not a linear-model artifact, motivating the four architectural recommendations. \emph{A critical caveat:} in the current synthetic generator the private score is constructed as the public score plus Gaussian noise, while the public score is itself the first feature of the predictor's input vector; the reported AUC is therefore partly a structural identity of the generator and must not be read as evidence that a real private score is predictable from public traces. We make this circularity explicit in \S4.4 and propose a non-circular design in which an external ground-truth anchor audits the scoring function through a model-free gate before any promotion decision. The empirical claim awaits AIDE85's lineage release.
+\end{abstract}
+
+\tableofcontents
+\bigskip
+
+\setcounter{section}{0}
+\section{Introduction}
+\input{section_1_formatted}
+
+\section{Related Work}
+\input{section_2_formatted}
+
+\section{Bi-Level PEPA Formalization}
+\input{section_3_formatted}
+
+\section{Empirical Instantiation: AIDE\textsuperscript{2}}
+\input{section_4_formatted}
+
+P1 power (unit is one inner-loop evaluation per candidate; two-sample two-sided $\alpha{=}0.05$, power $0.8$): MDE $d{=}(t_{.975,df}{+}t_{.8,df})\sqrt{2/n}$ is $(2.306{+}0.889)\sqrt{2/5}{\approx}2.02$ at the canonical $N_{\mathrm{inner}}{=}5$ ($df{=}8$) versus $(1.984{+}0.845)\sqrt{2/50}{\approx}0.57$ at $N_{\mathrm{inner}}{\approx}50$ ($df{=}98$), so $d{=}0.5$ requires ${\sim}50$ evaluations per candidate and the $N_{\mathrm{inner}}{=}5$ ignition test is underpowered, consistent with \S4.3.
+
+\section{Architectural Recommendations}
+\input{section_5_formatted}
+
+\section{Limitations and Open Questions}
+\input{section_6_formatted}
+
+\section{Broader Impact and Ethics}
+Bi-Level PEPA is a methodological framework illustrated with model-generated and benchmark evidence; no human subjects or personal data are used in the supplied experiments. The formal recommendations are conditional on the stated assumptions, datasets, and runtime settings, and are not universal safety assurances. Deployment should include independent audits, version/seed logging, and human oversight. Any future release must preserve dataset licenses and per-run provenance.
+
+\section{Conclusion}
+\input{section_7_formatted}
+
+\appendix
+
+\input{section_8_appendix_A_companion}
+
+\input{section_10_appendix_C_p1_proof}
+
+\input{section_9_appendix_D_p2_proof}
+
+\input{section_11_appendix_E_p3_proof}
+
+\section*{Appendix B: Figures}
+\addcontentsline{toc}{section}{Appendix B: Figures}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig1_architecture.pdf}
+\caption{Bi-Level PEPA architecture diagram showing the inner-loop agent $\Lambda$, the outer-loop agent $\Omega$, the public score $\mu_{\text{pub}}$, the private score $\mu_{\text{priv}}$, and the audit channel $\alpha$ as a first-class barrier.}
+\label{fig:architecture}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.55\textwidth]{figures/fig2_p2_roc.pdf}
+\caption{Illustrative ROC curve for the P2 meta-predictor on synthetic data calibrated to Weco AI's reported AIDE\textsuperscript{2} statistics. \emph{Caliber note:} the number printed inside the figure ($\text{AUC}=0.992\pm0.007$, from an early plotting run) is a legacy self-report; the two authoritative, reproducible calibers are the single-split canonical rerun ($\text{AUC}=0.9970$, seed 0) and the 5-model $\times$ 10-fold cross-validation mean ($0.9957\pm0.0027$ for linear), reported in \S4 and Appendix D. The figure is illustrative of shape only; do not quote its embedded number as a result.}
+\label{fig:p2_roc}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig3_audit_axioms.pdf}
+\caption{AIDE\textsuperscript{2}'s mechanisms vs.\ Bi-Level PEPA's three audit axioms. Red crosses mark axioms violated by the mechanism.}
+\label{fig:audit_axioms}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig4_aide2_mapping.pdf}
+\caption{Heatmap of Bi-Level PEPA compliance for AIDE\textsuperscript{2}. The audit channel $\alpha$ is the most under-implemented element.}
+\label{fig:aide2_mapping}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig5_cost_analysis.pdf}
+\caption{Cost composition and R\&D efficiency ratio for AIDE\textsuperscript{2} vs.\ the manually-tuned AIDEhuman baseline. Estimated total cost is approximately \$105K for AIDE\textsuperscript{2}, achieving roughly \$25K per 0.01 private score gain---a 70$\times$ speedup over the human baseline.}
+\label{fig:cost_analysis}
+\end{figure}
+
+\section*{Appendix F: Reproducibility and Open Source}
+\addcontentsline{toc}{section}{Appendix F: Reproducibility and Open Source}
+
+All code is available at the project repository~\cite{anon2026bi}:
+\begin{itemize}
+    \item $\mathtt{p2\_falsification/}$ --- the meta-predictor module and its synthetic-data test; the canonical single-split rerun ($\text{AUC}=0.9970$, seed 0) and 10-fold CV mean ($0.9957\pm0.0027$, linear) are reproducible on CPU with scikit-learn; no GPU is required or used.
+    \item $\mathtt{examples/aide0\_extension/}$ --- a minimal viable demonstration of adding an audit log to AIDE0's existing evaluation pipeline.
+    \item $\mathtt{paper/figures/}$ --- reproducible figures via $\mathtt{matplotlib}$.
+    \item $\mathtt{paper/main.tex}$ --- this paper's source.
+\end{itemize}
+
+\nocite{*}
+
+\bibliographystyle{tmlr}
+\bibliography{references}
+
+\end{document}

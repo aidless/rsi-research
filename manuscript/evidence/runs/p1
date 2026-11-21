@@ -1,0 +1,658 @@
+{
+  "prediction": "P1 (measurement-noise lower bound on ignition tests)",
+  "falsification_rule": "P1 falsified if ESS-corrected Power(N_inner=5, d=0.5) >= 0.8 for any rho >= 0",
+  "verdict": "P1 supported",
+  "decision_row": [
+    {
+      "rho": 0.0,
+      "n_inner": 5,
+      "naive_power": 0.106,
+      "ess_corr_power": 0.13,
+      "ess_corr_ci": [
+        0.1106,
+        0.1523
+      ],
+      "n_eff": 5.0
+    },
+    {
+      "rho": 0.3,
+      "n_inner": 5,
+      "naive_power": 0.182,
+      "ess_corr_power": 0.075,
+      "ess_corr_ci": [
+        0.0603,
+        0.093
+      ],
+      "n_eff": 2.69
+    },
+    {
+      "rho": 0.5,
+      "n_inner": 5,
+      "naive_power": 0.282,
+      "ess_corr_power": 0.047,
+      "ess_corr_ci": [
+        0.0355,
+        0.0619
+      ],
+      "n_eff": 1.67
+    },
+    {
+      "rho": 0.7,
+      "n_inner": 5,
+      "naive_power": 0.425,
+      "ess_corr_power": 0.015,
+      "ess_corr_ci": [
+        0.0091,
+        0.0246
+      ],
+      "n_eff": 0.88
+    },
+    {
+      "rho": 0.9,
+      "n_inner": 5,
+      "naive_power": 0.662,
+      "ess_corr_power": 0.0,
+      "ess_corr_ci": [
+        0.0,
+        0.0038
+      ],
+      "n_eff": 0.26
+    }
+  ],
+  "cells": [
+    {
+      "rho": 0.0,
+      "n_inner": 1,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.0,
+      "ess_corr_power": 0.07,
+      "sigma_eff": 1.0,
+      "n_eff": 1.0,
+      "naive_ci": [
+        0.0,
+        0.0038
+      ],
+      "ess_corr_ci": [
+        0.0558,
+        0.0875
+      ]
+    },
+    {
+      "rho": 0.0,
+      "n_inner": 2,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.027,
+      "ess_corr_power": 0.094,
+      "sigma_eff": 0.7071,
+      "n_eff": 2.0,
+      "naive_ci": [
+        0.0186,
+        0.039
+      ],
+      "ess_corr_ci": [
+        0.0774,
+        0.1137
+      ]
+    },
+    {
+      "rho": 0.0,
+      "n_inner": 5,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.106,
+      "ess_corr_power": 0.13,
+      "sigma_eff": 0.4472,
+      "n_eff": 5.0,
+      "naive_ci": [
+        0.0884,
+        0.1266
+      ],
+      "ess_corr_ci": [
+        0.1106,
+        0.1523
+      ]
+    },
+    {
+      "rho": 0.0,
+      "n_inner": 10,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.195,
+      "ess_corr_power": 0.206,
+      "sigma_eff": 0.3162,
+      "n_eff": 10.0,
+      "naive_ci": [
+        0.1716,
+        0.2207
+      ],
+      "ess_corr_ci": [
+        0.1821,
+        0.2322
+      ]
+    },
+    {
+      "rho": 0.0,
+      "n_inner": 50,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.681,
+      "ess_corr_power": 0.703,
+      "sigma_eff": 0.1414,
+      "n_eff": 50.0,
+      "naive_ci": [
+        0.6515,
+        0.7091
+      ],
+      "ess_corr_ci": [
+        0.6739,
+        0.7305
+      ]
+    },
+    {
+      "rho": 0.0,
+      "n_inner": 100,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.944,
+      "ess_corr_power": 0.941,
+      "sigma_eff": 0.1,
+      "n_eff": 100.0,
+      "naive_ci": [
+        0.928,
+        0.9566
+      ],
+      "ess_corr_ci": [
+        0.9246,
+        0.954
+      ]
+    },
+    {
+      "rho": 0.3,
+      "n_inner": 1,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.0,
+      "ess_corr_power": 0.012,
+      "sigma_eff": 1.3628,
+      "n_eff": 0.54,
+      "naive_ci": [
+        0.0,
+        0.0038
+      ],
+      "ess_corr_ci": [
+        0.0069,
+        0.0209
+      ]
+    },
+    {
+      "rho": 0.3,
+      "n_inner": 2,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.04,
+      "ess_corr_power": 0.039,
+      "sigma_eff": 0.9636,
+      "n_eff": 1.08,
+      "naive_ci": [
+        0.0295,
+        0.054
+      ],
+      "ess_corr_ci": [
+        0.0287,
+        0.0529
+      ]
+    },
+    {
+      "rho": 0.3,
+      "n_inner": 5,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.182,
+      "ess_corr_power": 0.075,
+      "sigma_eff": 0.6094,
+      "n_eff": 2.69,
+      "naive_ci": [
+        0.1593,
+        0.2071
+      ],
+      "ess_corr_ci": [
+        0.0603,
+        0.093
+      ]
+    },
+    {
+      "rho": 0.3,
+      "n_inner": 10,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.273,
+      "ess_corr_power": 0.134,
+      "sigma_eff": 0.4309,
+      "n_eff": 5.38,
+      "naive_ci": [
+        0.2463,
+        0.3014
+      ],
+      "ess_corr_ci": [
+        0.1143,
+        0.1565
+      ]
+    },
+    {
+      "rho": 0.3,
+      "n_inner": 50,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.642,
+      "ess_corr_power": 0.457,
+      "sigma_eff": 0.1927,
+      "n_eff": 26.92,
+      "naive_ci": [
+        0.6118,
+        0.6711
+      ],
+      "ess_corr_ci": [
+        0.4263,
+        0.488
+      ]
+    },
+    {
+      "rho": 0.3,
+      "n_inner": 100,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.868,
+      "ess_corr_power": 0.718,
+      "sigma_eff": 0.1363,
+      "n_eff": 53.85,
+      "naive_ci": [
+        0.8456,
+        0.8876
+      ],
+      "ess_corr_ci": [
+        0.6893,
+        0.745
+      ]
+    },
+    {
+      "rho": 0.5,
+      "n_inner": 1,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.0,
+      "ess_corr_power": 0.001,
+      "sigma_eff": 1.7321,
+      "n_eff": 0.33,
+      "naive_ci": [
+        0.0,
+        0.0038
+      ],
+      "ess_corr_ci": [
+        0.0002,
+        0.0056
+      ]
+    },
+    {
+      "rho": 0.5,
+      "n_inner": 2,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.076,
+      "ess_corr_power": 0.008,
+      "sigma_eff": 1.2247,
+      "n_eff": 0.67,
+      "naive_ci": [
+        0.0611,
+        0.0941
+      ],
+      "ess_corr_ci": [
+        0.0041,
+        0.0157
+      ]
+    },
+    {
+      "rho": 0.5,
+      "n_inner": 5,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.282,
+      "ess_corr_power": 0.047,
+      "sigma_eff": 0.7746,
+      "n_eff": 1.67,
+      "naive_ci": [
+        0.255,
+        0.3107
+      ],
+      "ess_corr_ci": [
+        0.0355,
+        0.0619
+      ]
+    },
+    {
+      "rho": 0.5,
+      "n_inner": 10,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.378,
+      "ess_corr_power": 0.076,
+      "sigma_eff": 0.5477,
+      "n_eff": 3.33,
+      "naive_ci": [
+        0.3485,
+        0.4085
+      ],
+      "ess_corr_ci": [
+        0.0611,
+        0.0941
+      ]
+    },
+    {
+      "rho": 0.5,
+      "n_inner": 50,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.627,
+      "ess_corr_power": 0.313,
+      "sigma_eff": 0.2449,
+      "n_eff": 16.67,
+      "naive_ci": [
+        0.5966,
+        0.6564
+      ],
+      "ess_corr_ci": [
+        0.285,
+        0.3424
+      ]
+    },
+    {
+      "rho": 0.5,
+      "n_inner": 100,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.805,
+      "ess_corr_power": 0.513,
+      "sigma_eff": 0.1732,
+      "n_eff": 33.33,
+      "naive_ci": [
+        0.7793,
+        0.8284
+      ],
+      "ess_corr_ci": [
+        0.482,
+        0.5439
+      ]
+    },
+    {
+      "rho": 0.7,
+      "n_inner": 1,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.0,
+      "ess_corr_power": 0.0,
+      "sigma_eff": 2.3805,
+      "n_eff": 0.18,
+      "naive_ci": [
+        0.0,
+        0.0038
+      ],
+      "ess_corr_ci": [
+        0.0,
+        0.0038
+      ]
+    },
+    {
+      "rho": 0.7,
+      "n_inner": 2,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.103,
+      "ess_corr_power": 0.002,
+      "sigma_eff": 1.6833,
+      "n_eff": 0.35,
+      "naive_ci": [
+        0.0857,
+        0.1234
+      ],
+      "ess_corr_ci": [
+        0.0005,
+        0.0073
+      ]
+    },
+    {
+      "rho": 0.7,
+      "n_inner": 5,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.425,
+      "ess_corr_power": 0.015,
+      "sigma_eff": 1.0646,
+      "n_eff": 0.88,
+      "naive_ci": [
+        0.3947,
+        0.4559
+      ],
+      "ess_corr_ci": [
+        0.0091,
+        0.0246
+      ]
+    },
+    {
+      "rho": 0.7,
+      "n_inner": 10,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.508,
+      "ess_corr_power": 0.053,
+      "sigma_eff": 0.7528,
+      "n_eff": 1.76,
+      "naive_ci": [
+        0.477,
+        0.5389
+      ],
+      "ess_corr_ci": [
+        0.0407,
+        0.0687
+      ]
+    },
+    {
+      "rho": 0.7,
+      "n_inner": 50,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.638,
+      "ess_corr_power": 0.177,
+      "sigma_eff": 0.3367,
+      "n_eff": 8.82,
+      "naive_ci": [
+        0.6077,
+        0.6672
+      ],
+      "ess_corr_ci": [
+        0.1546,
+        0.2019
+      ]
+    },
+    {
+      "rho": 0.7,
+      "n_inner": 100,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.751,
+      "ess_corr_power": 0.308,
+      "sigma_eff": 0.238,
+      "n_eff": 17.65,
+      "naive_ci": [
+        0.7233,
+        0.7768
+      ],
+      "ess_corr_ci": [
+        0.2802,
+        0.3373
+      ]
+    },
+    {
+      "rho": 0.9,
+      "n_inner": 1,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.0,
+      "ess_corr_power": 0.0,
+      "sigma_eff": 4.3589,
+      "n_eff": 0.05,
+      "naive_ci": [
+        0.0,
+        0.0038
+      ],
+      "ess_corr_ci": [
+        0.0,
+        0.0038
+      ]
+    },
+    {
+      "rho": 0.9,
+      "n_inner": 2,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.263,
+      "ess_corr_power": 0.0,
+      "sigma_eff": 3.0822,
+      "n_eff": 0.11,
+      "naive_ci": [
+        0.2367,
+        0.2912
+      ],
+      "ess_corr_ci": [
+        0.0,
+        0.0038
+      ]
+    },
+    {
+      "rho": 0.9,
+      "n_inner": 5,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.662,
+      "ess_corr_power": 0.0,
+      "sigma_eff": 1.9494,
+      "n_eff": 0.26,
+      "naive_ci": [
+        0.6321,
+        0.6906
+      ],
+      "ess_corr_ci": [
+        0.0,
+        0.0038
+      ]
+    },
+    {
+      "rho": 0.9,
+      "n_inner": 10,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.67,
+      "ess_corr_power": 0.006,
+      "sigma_eff": 1.3784,
+      "n_eff": 0.53,
+      "naive_ci": [
+        0.6403,
+        0.6984
+      ],
+      "ess_corr_ci": [
+        0.0028,
+        0.013
+      ]
+    },
+    {
+      "rho": 0.9,
+      "n_inner": 50,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.743,
+      "ess_corr_power": 0.063,
+      "sigma_eff": 0.6164,
+      "n_eff": 2.63,
+      "naive_ci": [
+        0.715,
+        0.7691
+      ],
+      "ess_corr_ci": [
+        0.0495,
+        0.0798
+      ]
+    },
+    {
+      "rho": 0.9,
+      "n_inner": 100,
+      "d": 0.5,
+      "alpha": 0.05,
+      "reps": 1000,
+      "naive_power": 0.767,
+      "ess_corr_power": 0.112,
+      "sigma_eff": 0.4359,
+      "n_eff": 5.26,
+      "naive_ci": [
+        0.7398,
+        0.7921
+      ],
+      "ess_corr_ci": [
+        0.0939,
+        0.1331
+      ]
+    }
+  ],
+  "config": {
+    "rho_grid": [
+      0.0,
+      0.3,
+      0.5,
+      0.7,
+      0.9
+    ],
+    "n_inner_grid": [
+      1,
+      2,
+      5,
+      10,
+      50,
+      100
+    ],
+    "n_reps": 1000,
+    "seed": 42,
+    "d": 0.5,
+    "alpha": 0.05,
+    "naive_test": "Welch t-test on raw AR(1) series (anti-conservative under rho>0)",
+    "decision_test": "ESS-corrected z-test using sigma_eff = sigma*sqrt((1+rho)/(1-rho))/sqrt(N_inner)"
+  },
+  "generated_at": "2026-11-19T15:17:10.962928+08:00"
+}

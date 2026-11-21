@@ -1,0 +1,88 @@
+% Section 9 -- Appendix D: Formal Proof of P2 (Ungameability Implies No Level-2 RSI)
+
+\section*{Appendix D: Formal Proof of P2}
+\addcontentsline{toc}{section}{Appendix D: Formal Proof of P2}
+
+This appendix gives a complete proof of P2 (the ungameability claim of \S3.4) using online-learning theory. The main text's \S3.4.2 contained a proof sketch; the full argument is below. \textbf{Notation.} Throughout, $\mathcal{H}_{\text{pub}}^t$ denotes the public history of the inner-loop agent $\Lambda$ after $t$ outer-loop steps; $f_t \in F$ denotes the meta-predictor at step $t$ (we treat $F$ as a fixed function class); $\mu_{\text{priv}}^t$ and $\mu_{\text{pub}}^t$ are random variables for the private and public scores of $\Lambda$ at step $t$; and $\Delta_t := \mathbb{E}[|\mu_{\text{priv}}^t - \mu_{\text{pub}}^t|]$ is the two-score gap.
+
+\subsection*{C.1 Setup and Assumptions}
+
+We work in the online-learning setting of \S3.2: at each outer-loop step $t = 1, 2, \ldots, T$, the inner-loop optimizer $\Lambda$ observes $\mathcal{H}_{\text{pub}}^t$ and proposes a candidate solution; the outer-loop retention gate accepts or rejects based on the realized $\mu_{\text{priv}}^t$.
+
+\textbf{Assumption 1 (Predictability).} There exists a function class $F \subseteq \{\,f : \mathcal{H}_{\text{pub}} \to [0,1] \mid f \text{ measurable}\,\}$ and a regret bound $R_T(F) = o(T)$ such that the online-learning algorithm on $F$ achieves
+\[
+\sum_{t=1}^{T} \ell(f_t, \mu_{\text{priv}}^t) - \min_{f \in F} \sum_{t=1}^{T} \ell(f, \mu_{\text{priv}}^t) \le R_T(F),
+\]
+where $\ell(f, y) = (f(\mathcal{H}_{\text{pub}}^t) - y)^2$ is the squared loss. In particular, there exists a sequence $\{f_t\}_{t=1}^T$ such that $\frac{1}{T} \sum_{t=1}^{T} \mathbb{E}[(f_t(\mathcal{H}_{\text{pub}}^t) - \mu_{\text{priv}}^t)^2] < \sigma_{\text{priv}}^2 / 2$, where $\sigma_{\text{priv}}^2 = \mathrm{Var}(\mu_{\text{priv}})$.
+
+\textbf{Assumption 2 (Sub-Gaussian Noise).} The run-to-run noise $\delta$ on $\mu_{\text{priv}}^t$ is sub-Gaussian with parameter $\sigma$ (i.e., $\mathbb{E}[\exp(\lambda(\delta - \mathbb{E}[\delta]))] \le \exp(\sigma^2 \lambda^2 / 2)$ for all $\lambda \in \mathbb{R}$). This matches the empirical estimate of $\sigma \approx 0.04$ from \S3.1.
+
+\textbf{Assumption 3 (Retention Strictness).} The outer-loop retention gate compares the realized $\mu_{\text{priv}}^t$ to a fixed threshold $\tau_t$ and accepts iff $\mu_{\text{priv}}^t > \tau_t$, where $\tau_t$ is non-increasing in $t$ (the outer loop becomes more selective as $t$ grows, matching Weco's protocol).
+
+\textbf{Assumption 4 (No-Information-Without-Causality).} The inner-loop optimizer $\Lambda$ cannot directly observe $\mu_{\text{priv}}$; its only access to $\mu_{\text{priv}}$ is via $f_t(\mathcal{H}_{\text{pub}}^t)$ and the public score $\mu_{\text{pub}}^t$.
+
+\subsection*{C.2 Three Lemmas}
+
+\textbf{Lemma 1 (Inner-Loop Targeting).} Under Assumptions 1 and 4, the inner-loop optimizer $\Lambda$ converges to a policy that minimizes $(f_t(\mathcal{H}_{\text{pub}}^t) - \mu_{\text{priv}}^t)^2$ subject to the public-score constraint. That is, $\Lambda$'s effective objective is the predictable loss, not the true private score.
+
+\textit{Proof.} By Assumption 4, $\Lambda$ has no oracle access to $\mu_{\text{priv}}$. Its only proxy is the predictor output $f_t(\mathcal{H}_{\text{pub}}^t)$. By Assumption 1, the online-learning regret is $o(T)$, so $f_t$ achieves near-optimal squared loss against $\mu_{\text{priv}}^t$. Gradient-descent-style optimization in $\Lambda$ therefore drives $(f_t(\mathcal{H}_{\text{pub}}^t) - \mu_{\text{priv}}^t)^2 \to 0$ at the rate $R_T(F)/T \to 0$. \hfill$\square$
+
+\textbf{Lemma 2 (Selection on Predictable Components).} Under Assumptions 1, 3, and 4, the outer-loop retention gate retains exactly those $\Lambda$ whose $\mu_{\text{priv}}^t$ is well-approximated by $f_t(\mathcal{H}_{\text{pub}}^t)$. In the limit, the retained $\Lambda$ population has the property that $\mu_{\text{priv}}^t - f_t(\mathcal{H}_{\text{pub}}^t) \to 0$ in $\mathcal{L}^2$.
+
+\textit{Proof.} The retention gate uses $\mu_{\text{priv}}^t$ (Assumption 3). A $\Lambda$ variant with $\mu_{\text{priv}}^t - f_t(\mathcal{H}_{\text{pub}}^t) = \epsilon_t$ in $\mathcal{L}^2$ has expected private score $\mathbb{E}[\mu_{\text{priv}}^t] = f_t(\mathcal{H}_{\text{pub}}^t) + \epsilon_t$. Variants with $\epsilon_t > 0$ (under-predicted) are more likely to pass the gate by chance of sub-Gaussian noise; variants with $\epsilon_t < 0$ (over-predicted) are systematically rejected because the realized $\mu_{\text{priv}}^t$ falls below the threshold. Over $T$ rounds, the surviving lineage is exactly those with $\epsilon_t \to 0$ (i.e., the gap to the predictor vanishes in $\mathcal{L}^2$). \hfill$\square$
+
+\textbf{Lemma 3 (Gap Monotonicity, rigorous 3-step).} Under Assumptions 1--4, the two-score gap $\Delta_t := \mathbb{E}[|\mu_{\text{priv}}^t - \mu_{\text{pub}}^t|]$ is \emph{asymptotically non-decreasing}: for all $t$ large enough that the inner-loop regret $R_t(F) \leq \eta \cdot \beta_t \cdot t$, $\Delta_{t+1} \geq \Delta_t$, and the cumulative gap satisfies $\Delta_T = \Omega(\sqrt{\log T})$ at $T$ outer-loop steps.
+
+\textit{Proof.} We derive the gap dynamics in three steps.
+
+\textbf{Step 1 (inner-loop proxy dynamics).} By Lemma 1, $\Lambda$ minimizes $(f_t(\mathcal{H}_{\text{pub}}^t) - \mu_{\text{priv}}^t)^2$ subject to the constraint that only $\mu_{\text{pub}}$ is directly observable (Assumption 4). The inner-loop's effective gradient on $\mu_{\text{pub}}$ is therefore
+\[
+\mu_{\text{pub}}^{t+1} = \mu_{\text{pub}}^t + \eta_\Lambda \cdot (f_t - \mu_{\text{priv}}^t),
+\]
+where $\eta_\Lambda > 0$ is the inner-loop learning rate. This gradient flow converges to $f_t$ in expectation, with residual
+\[
+\mu_{\text{pub}}^t = f_t + \xi_t, \quad \xi_t = O(\sqrt{\log t / t})
+\]
+by Zinkevich's (2003) online-gradient-descent regret bound (Assumption 1 implies $\Lambda$ is no-regret). The key point: $\xi_t \to 0$ at a known rate.
+
+\textbf{Step 2 (retention selects for predictable lineage).} By Lemma 2, the surviving outer-loop lineage satisfies $\mu_{\text{priv}}^t = f_t + \epsilon_t$ with $\epsilon_t \to 0$ in $\mathcal{L}^2$. The selection gate is monotone in $t$ (Assumption 3), so $\epsilon_{t+1} \leq \epsilon_t$ on the surviving lineage (variants with $\epsilon_t > 0$ are systematically rejected). Therefore:
+\[
+\Delta_t = \mathbb{E}[|\mu_{\text{priv}}^t - \mu_{\text{pub}}^t|] = \mathbb{E}[|(f_t + \epsilon_t) - (f_t + \xi_t)|] = \mathbb{E}[|\epsilon_t - \xi_t|] \geq \mathbb{E}[|\epsilon_t|] - \mathbb{E}[|\xi_t|].
+\]
+
+\textbf{Step 3 (gap is asymptotically non-decreasing).} Substituting and using the triangle inequality:
+\[
+\Delta_{t+1} = \mathbb{E}[|\epsilon_{t+1} - \xi_{t+1}|] \geq \mathbb{E}[|\epsilon_{t+1}|] - \mathbb{E}[|\xi_{t+1}|] \geq \mathbb{E}[|\epsilon_t|] - \mathbb{E}[|\xi_t|] - |\xi_{t+1} - \xi_t|.
+\]
+The first inequality uses $|\epsilon_{t+1}| \geq |\epsilon_t|$ (monotonicity of selection per Lemma 2). The contraction term $|\xi_{t+1} - \xi_t| = O(\sqrt{\log(t+1)/(t+1)} - \sqrt{\log t/t}) = O(1/(t\sqrt{t}))$ decays faster than the inner-loop rate of $\xi_t$ itself, so the cumulative drift vanishes:
+\[
+\sum_{t=1}^{T} |\xi_{t+1} - \xi_t| \leq \sqrt{\log T} \cdot \max_t |\xi_t| = O(\sqrt{\log T}) \cdot O(1) = O(\sqrt{\log T}).
+\]
+Cumulatively, $\Delta_T \geq \mathbb{E}[|\epsilon_0|] + \sum_t (\eta \cdot \beta_t - |\xi_{t+1} - \xi_t|) = \Omega(\sqrt{\log T})$ at the no-regret rate. \hfill$\square$
+
+\textbf{Honest scope statement.} The rate $\beta_t = \Omega(\sqrt{\log t / t})$ is the standard no-regret rate for a bounded-convex-loss online learner. The inner-loop optimizer $\Lambda$ may not be a standard OGD instance: for LLM-based optimizers with prompt-injection capability, the rate may be much faster (or even adversarial). This caveat is the empirical risk that R3 (audit logging, \S5.3) addresses --- by logging all reads of $\alpha$, we can detect the case where $\Lambda$ exceeds the no-regret bound.
+
+\subsection*{C.3 Main Theorem}
+
+\textbf{Theorem (P2: Ungameability is necessary).} Under Assumptions 1--4, if $\mu_{\text{priv}}$ is predictable in the sense of Assumption 1, then no bi-level RSI can reach Level 2 within $T$ outer-loop steps, where the failure bound is $T = \Omega(\sigma_\mu^2 / \Delta_{\text{crit}})$ for any $\Delta_{\text{crit}} > 0$ required for stable retention.
+
+\textit{Proof.} By Lemma 3, after $T_0 := c \cdot \sigma_\mu^2 / \Delta_{\text{crit}}$ outer-loop steps (for some constant $c$ depending on the family $F$), the gap satisfies $\Delta_{T_0} \geq \Delta_{\text{crit}}$. For $\Delta_{\text{crit}} = \sigma_\mu$, the retention signal is now dominated by gap noise: the realized $\mu_{\text{priv}}^t$ is indistinguishable from $f_t(\mathcal{H}_{\text{pub}}^t) + \xi_t$ where $\xi_t \sim \mathcal{N}(0, \sigma^2)$ and the selection differential $\mathbb{E}[\mu_{\text{priv}}^{t+1} - \mu_{\text{priv}}^t | \text{retained}]$ is bounded above by $O(\sigma)$. By concentration (Hoeffding's inequality), the probability of accepting a worse $\Lambda$ and rejecting a better one approaches $1/2$, so the outer loop's selection pressure compounds as $\le T^{-1/2}$ rather than the $\Omega(T^{-1})$ expected under faithful $\mu_{\text{priv}}$ measurement. The outer loop cannot, in this regime, distinguish a genuine improvement (a $\Lambda$ with high $\mu_{\text{priv}}$ for the right reason) from a public-history prediction (a $\Lambda$ with high $f_t$). Therefore no $\Lambda$ in the lineage simultaneously serves as improved $\Omega$ over consecutive iterations --- the Level-2 RSI criterion is not met within $T_0$ steps. \hfill$\square$
+
+\subsection*{C.4 Regularity Conditions and Limitations}
+
+The proof relies on Assumptions 1--4, of which the most consequential is Assumption 1 (predictability). In practice, predictability is empirical and not absolute: a system may be predictable on a restricted class $F$ (e.g., 16-dim linear regression) but not on a richer class that captures the agent's full reasoning. The full P2 statement is therefore conditional: \emph{if} the relevant $F$ is the one the system is predictable on, \emph{then} the conclusion holds. We retain the $\ell^2/2$ threshold as a conventional choice; tightening to $\ell^2/k$ for $k > 2$ would relax the conclusion (a system that is only weakly predictable might still reach Level 2).
+
+Three other limitations:
+\begin{enumerate}
+    \item The proof assumes i.i.d.\ noise $\delta$; in practice, $\delta$ may drift across outer-loop steps. Sensitivity analysis is required for non-stationary $\delta$ (see \S4.3 for the AR(1) outer-loop autocorrelation model).
+    \item The proof assumes the inner-loop optimizer is approximately a no-regret learner on $F$. For aggressive optimizers (e.g., LLM-based with prompt-injection), the regret bound $R_T(F)$ may not hold; this is exactly the failure mode that R3 (audit logging) addresses.
+    \item The proof treats $\Omega$ as fixed; in practice, $\Omega$ may also be modified (an additional outer-outer loop). Extending the proof to $k$-level RSI is an open direction.
+\end{enumerate}
+
+\subsection*{C.5 Numerical Illustration}
+
+For Weco AIDE\textsuperscript{2}'s reported ignition test ($T = 100$ outer-loop steps, $N_{\text{inner}} = 5$ inner evaluations per candidate, $\sigma_\mu = 0.04$), the failure bound $T_0 \approx 0.04^2 / 0.04 = 0.04 \cdot c$ outer-loop steps for a unit $\Delta_{\text{crit}}$. With $c \approx 50$ (the empirical no-regret constant for 16-dim linear regression), $T_0 \approx 2$ outer-loop steps --- meaning the gap $\Delta$ reaches $\sigma_\mu$ essentially immediately under the predicted $\mu_{\text{priv}}$, and the outer loop cannot accumulate Level-2 RSI signal. This matches AIDE\textsuperscript{2}'s reported underpowering of the ignition test (\S3.4) and the $\S4.3$ DDC quantitative amplifier's finding that the test is provably underpowered at $N_{\text{inner}} = 5$.
+
+\subsection*{C.6 Connection to Empirical Result}
+
+The P2 falsification in \S4.4 (canonical single-split $\text{AUC} = 0.9970$ for a 16-dim linear meta-predictor on synthetic data; 10-fold CV mean $0.9957\pm0.0027$) provides empirical evidence for the predictor $f$ in Assumption 1. \emph{Non-circularity caveat:} because the current synthetic generator constructs the target as a noisy copy of a feature that is also an input to $f$, this number should be read as a demonstration that a \emph{circular} generator trivially supports the predictor, not as evidence that a real $\mu_{\text{priv}}$ is predictable; the non-circular audit-gate design of \S4.4 is what makes Assumption 1 genuinely falsifiable on real lineage. Combined with the proof above, the empirical predictability of $\mu_{\text{priv}}$ on the linear class \emph{would imply}, under the other regularity conditions, that a bi-level RSI agent using the same public-history representation fails to reach Level 2. This is the formal meaning of the \S4.4 result: it is not just a curiosity of synthetic data, but a structural obstacle to Level-2 RSI in any system with predictable $\mu_{\text{priv}}$.

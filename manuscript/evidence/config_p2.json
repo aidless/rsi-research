@@ -1,0 +1,8 @@
+{
+ "backend": "linear",
+ "n_agents": 1000,
+ "seed": 0,
+ "noise_sigma": 0.1,
+ "n_folds": 10,
+ "n_seeds": 5
+}

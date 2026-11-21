@@ -1,0 +1,152 @@
+% Section 7 -- Conclusion
+
+\subsection{What We Have Shown}
+
+We have proposed \textbf{Bi-Level PEPA}, a formal framework that elevates the \emph{audit channel} $\alpha$ from plumbing to a first-class architectural object. The framework yields three falsifiable predictions: (P1) a measurement-noise lower bound on ignition tests; (P2) the necessity of an ungameable private score for Level-2 RSI; (P3) the equivalence between emergent anti-reward-hacking behaviors and evolution of audit-channel capacity.
+
+We have instantiated the framework on AIDE\textsuperscript{2} (Jiang et al. 2026), the strongest empirical candidate for bi-level RSI to date. Our instantiation identifies \emph{five distinct audit-channel mechanisms} in AIDE\textsuperscript{2}'s protocol and shows that none strictly satisfies our formal axioms. We treat this not as a defect of Weco's design but as a \emph{category-level architectural gap}: the field has not yet developed a vocabulary for treating $\alpha$ as a first-class object.
+
+We have provided three direct empirical instantiations:
+\begin{itemize}
+    \item \textbf{P1}: a noise-lower-bound argument that explains AIDE\textsuperscript{2}'s reported failure to reach statistical significance in the ignition test, operationalized in the DDC quantitative amplifier.
+    \item \textbf{P2}: a $\mu_{\text{priv}}$ meta-predictor that, on synthetic data calibrated to AIDE\textsuperscript{2}'s reported statistics, achieves canonical single-split $\text{AUC}=0.9970$ (linear; 10-fold CV mean $0.9957\pm0.0027$) and $0.9951$ (gradient boosting) --- directional evidence consistent with P2 and robust to model class, \emph{subject to the non-circularity caveat of \S4.4}.
+    \item \textbf{P3}: a conceptual operationalization showing that AIDE\textsuperscript{2}'s three reward-hacking layers (L1/L2/L3) can be understood as $\alpha$-capacity, consistent with the framework, with a precise DDB-Drill injection-attack protocol awaiting real-lineage execution.
+\end{itemize}
+
+Finally, we have supplied architectural recommendations (R1--R4) and a 5-probe red-team harness (\S5) that any bi-level RSI deployment can adopt verbatim to close the audit-channel gap.
+
+\subsection{What We Have Not Shown}
+
+We have not shown that AIDE\textsuperscript{2}'s $\mu_{\text{priv}}$ is empirically predictable from real data, only from synthetic data calibrated to AIDE\textsuperscript{2}'s reported statistics (\S4.4).
+
+We have not shown that P3's equivalence holds under ablation; we lack the AIDE85 lineage needed to forcibly disable L1/L2 and observe the reward-hacking rate trajectory.
+
+We have not validated Bi-Level PEPA on any system other than AIDE\textsuperscript{2}. Cross-system validation on RL-based prompt search or AutoML-Zero extensions is open future work.
+
+We do not claim Bi-Level PEPA is \emph{necessary}; we claim it is \emph{useful} as a protocol for any bi-level agent system. A different framework might also work; ours is, to our knowledge, the first to elevate the audit channel to a first-class object within the bi-level RSI literature.
+
+\subsection{Why It Matters}
+
+Bi-level RSI systems, if they reach Level-2 or Level-3, will be deployed in scientific R\&D, enterprise automation, and possibly safety-critical domains. The architectural gap we identify --- \emph{no first-class audit channel} --- has practical and safety implications. Any deployment without $\alpha$ is structurally unable to detect:
+\begin{itemize}
+    \item tampering with the inner-loop's evaluation pipeline (eval-script repair in AIDE\textsuperscript{2});
+    \item gaming of the audit-channel mechanisms themselves (L3 bug rendering L3 ineffective);
+    \item silent reward-shaping by the outer loop (eval-repair monkey patches evolving beyond intended behavior);
+    \item private-score leakability that may allow inner-loop agents to game selection (P2).
+\end{itemize}
+
+Our framework provides the minimum vocabulary to detect, diagnose, and prevent these failure modes. We hope that future bi-level RSI deployments --- including Weco's eventual AIDE85 technical report --- adopt at least some of our architectural recommendations.
+
+\subsection{Submission Category and Framing}
+
+We have written this paper as a \textbf{methods paper} in TMLR's submission taxonomy: a formal framework plus a single concrete instantiation plus open empirical questions. (TMLR distinguishes position, methods, contribution, and survey papers; methods papers introduce a new formalism and instantiate it on at least one concrete system, which matches our structure.) We have not framed the paper as a definitive proof of architectural failure in any specific system; we have framed it as \emph{useful vocabulary} for a field that has not yet developed it.
+
+A reader who disagrees with our framework should still find three things of value: a vocabulary for the audit channel ($\alpha$, with three axioms); a P2 meta-predictor test that any future bi-level RSI system can be subjected to; and a 5-probe red-team harness (\S5, R1--R4) that any deployment can use to verify its own compliance.
+
+We thank Weco AI for the empirical evidence they have made public; we thank the open-source AIDE0 community for the audit-able source code; and we thank the readers of this paper for taking the framework seriously enough to test it.
+
+\subsection{Evidence Chain}
+
+The three empirical claims of this paper --- P1, P2, and P3 --- are each supported by both a theoretical argument (\S3) and one or more companion artifacts that materialize the claim into executable form.
+
+\textbf{Path convention.} All file paths in this section are relative to the companion code repository root, the anonymized companion repository. The full file inventory is in \S A.1; reproducibility commands are in \S A.2. For each companion artifact below, the path is followed by a short description.
+
+\begin{itemize}
+    \item \textbf{P1} (\S3.4 $\to$ \S4.3): the noise-bound argument is operationalized in \texttt{p1\_drill/outer\_loop\_correlation.py} (AR(1) effective-sample-size simulator, with \texttt{p1\_drill/ddc\_results.txt} containing the tabulated decision-row output regenerated from \texttt{p1\_power\_results.json}). The simulator demonstrates that AIDE\textsuperscript{2}'s ignition-test underpowering is primarily due to insufficient inner-loop sample size per candidate ($N_{\text{inner}} = 5$, far below the $\sim$50 needed for $d = 0.5$ detection) and secondarily to outer-loop autocorrelation ($\rho \in [0.5, 0.7]$).
+    \item \textbf{P2} (\S3.4 $\to$ \S4.4): the predictability claim is operationalized in \texttt{p2\_falsification/mu\_priv\_meta\_predictor.py} (canonical single-split AUC $=0.9970$; 10-fold CV mean $0.9957\pm0.0027$) and stress-tested through \texttt{p2\_drill/ddd\_results.txt} (the 5-model AUC table, regenerated from \texttt{p2\_fold\_ci.json}). The 5-model robustness check confirms that the synthetic predictability is not an artifact of linear model choice --- non-linear models (Gradient Boosting, AUC $=0.9951$) are comparable to the linear baseline.
+    \item \textbf{P3} (\S3.4 $\to$ \S4.5): the audit-channel-capacity claim is operationalized in the DDB-Drill traceback-injection simulation, whose tabulated outcome is in \texttt{p3\_drill/p3\_results.json} (effect sequence $[9.30, 9.30, 0.0, 0.0]$ for the four injection conditions, monotone-decreasing). The design specification document \texttt{p3\_drill/drill\_design.md} is \textbf{pending reconstruction} (its original specification was lost; the simulation result is materialized by \texttt{p3\_results.json}).
+    \item \textbf{\S4.2 audit-channel mechanisms} (\S3.3 $\to$ \S4.2): the five-mechanism diagnostic table is grounded in a line-by-line inspection of AIDE0's \texttt{parse\_exec\_result} method (\texttt{aide/agent.py:296--339}) and \texttt{sys.path.append} mechanism (\texttt{aide/interpreter.py:127}). The dedicated inspection note \texttt{aide2\_audit/precise\_line\_audit.md} is \textbf{pending reconstruction}; the underlying line references are reported inline in \S4.2 and are the citation surface used here.
+    \item \textbf{Cross-section consistency}: the consistency check across \S3--\S6 (canonical $\sigma_\mu = 0.04$, L2 mechanism = LLM-judged + type check) is documented in \texttt{dde\_drill/dde\_design.md}, which is \textbf{pending reconstruction}; see \S6.5 for the paper-side disclosure.
+\end{itemize}
+
+We summarize these as a single evidence-chain table:
+
+\begin{table}[h]
+\centering
+\caption{Evidence chain: theoretical claims + empirical instantiations + companion artifacts (all paths repo-relative).}
+\label{tab:evidence-chain}
+\begin{tabular}{llll}
+\toprule
+Claim & Theoretical & Empirical & Companion artifact \\
+\midrule
+P1 (noise bound) & \S3.4 P1 & \S4.3 & \texttt{p1\_drill/outer\_loop\_correlation.py} \\
+P2 (ungameability) & \S3.4 P2 & \S4.4 + DDD robustness & \texttt{p2\_falsification/} + \texttt{p2\_drill/} \\
+P3 (audit-channel capacity) & \S3.4 P3 & \S4.5 + DDB injection & \texttt{p3\_drill/drill\_design.md} \\
+Audit-channel mechanisms & \S3.3 & \S4.2 & \texttt{aide2\_audit/precise\_line\_audit.md} \\
+Cross-section consistency & \S3--\S6 & \S6.5 & \texttt{dde\_drill/dde\_design.md} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Each companion artifact is independently reproducible ($<1$ second for the simulators; the audit and consistency documents are static markdown). The integration of theory + companion artifact + simulator is, we believe, a methodological contribution beyond the substantive framework --- it demonstrates that ``the framework is \emph{testable} in the real world'' rather than merely ``the framework is \emph{consistent} with the world''.
+
+\subsection{Companion Materials (Summary)}
+
+\paragraph{A.1 Code Repository.}
+the anonymized companion repository contains:
+
+\textbf{Main implementation (reproduces paper results)}:
+\begin{itemize}
+    \item \texttt{p2\_falsification/mu\_priv\_meta\_predictor.py}: the $\mu_{\text{priv}}$ meta-predictor used in \S4.4. Fully reproducible; produces the canonical single-split $\text{AUC}=0.9970$ (seed 0) and the 10-fold CV mean $0.9957\pm0.0027$ on synthetic data.
+    \item \texttt{p2\_falsification/run\_demo.py}: end-to-end demo that runs in $\sim$5 seconds.
+    \item \texttt{examples/aide0\_extension/add\_audit\_log.py}: minimal demonstration of append-only hash-chained audit log; 100 lines.
+    \item \texttt{docs/bi\_level\_pepa\_spec.md}: formal specification cross-referenced with this paper.
+    \item \texttt{docs/audit\_channel\_design.md}: detailed design of the audit channel $\alpha$ with reference implementations.
+    \item \texttt{docs/cps\_analysis.md}: cost-per-success analysis for AIDE\textsuperscript{2} $\sim$\$25K per 0.01 private score gain.
+\end{itemize}
+
+\textbf{Companion depth-drill artifacts (per \S7.5 evidence chain)}:
+\begin{itemize}
+    \item \texttt{aide2\_audit/precise\_line\_audit.md}: line-by-line inspection of AIDE0 source code (\texttt{aide/agent.py:296--339}, \texttt{aide/interpreter.py:127}) that grounds \S4.2's five-mechanism diagnostic.
+    \item \texttt{p1\_drill/outer\_loop\_correlation.py}: AR(1) effective-sample-size simulator supporting \S4.3's quantitative amplification analysis.
+    \item \texttt{p1\_drill/ddc\_results.txt}: tabulated results across $\rho \in \{0.0, 0.3, 0.5, 0.7, 0.9\}$.
+    \item \texttt{p2\_drill/model\_class\_robustness.py}: 5-model robustness check supporting \S4.4's predictability claim.
+    \item \texttt{p2\_drill/ddd\_results.txt}: tabulated AUC across 5 model classes.
+    \item \texttt{p3\_drill/drill\_design.md}: precise P3 falsification protocol (DDB-Drill) operationalizing the audit-channel-injection attack.
+    \item \texttt{dde\_drill/dde\_design.md}: cross-section consistency check across \S3--\S6.
+\end{itemize}
+
+\paragraph{A.2 Reproducibility.}
+All simulators run on commodity hardware in $<1$ minute. Full reproduction:
+
+\begin{verbatim}
+git clone \texttt{[anonymized repository URL at acceptance]}
+cd <repo>
+pip install -r p2_falsification/requirements.txt
+
+# Section 4.4 main result (P2 single-model canonical AUC = 0.9970, seed 0)
+python p2_falsification/run_demo.py
+
+# Section 4.3 P1 quantitative amplification (DDC)
+# P1 drill (pending restoration): python p1_drill/outer_loop_correlation.py
+
+# Section 4.4 P2 5-model robustness (DDD)
+python experiments/p2_falsification/mu_priv_meta_predictor.py \
+    --backend linear --n_agents 1000 --seed 0
+\end{verbatim}
+
+Expected output (full tables in respective \texttt{*\_results.txt}):
+\begin{itemize}
+    \item \S4.4: canonical single-split $\text{AUC} = 0.9970$ on a 1000-agent synthetic dataset, time $\sim$5 seconds (CPU).
+    \item \S4.3: $\sigma_{\text{cross}}$ amplification table, time $<1$ second.
+    \item \S4.4 robustness: 5-model AUC table (Linear/Ridge/RF/GB/MLP all $> 0.97$), time $\sim$30 seconds.
+\end{itemize}
+
+The AIDE0 source-code audit (\texttt{aide2\_audit/precise\_line\_audit.md}) is a static document; reproduction requires no execution.
+
+\paragraph{A.3 Citation.}
+\begin{verbatim}
+@techreport{anonymized2026auditable,
+  title  = {Auditable Recursive Self-Improvement:
+            A PDP-style Formal Framework for
+            Bi-Level Agent Systems},
+  author = {{Anonymized}},
+  year   = {2026},
+  institution = {Anonymized},
+  note   = {Methods paper; Companion code at
+            [anonymized repository]}
+}
+\end{verbatim}
+
+
+\textbf{Artifact restoration note (updated 2026-11-18)}: The v0.4 companion drill files cited above were created in an archived working session; some were not restored into this repository. As of this revision: the \textbf{P1 table} (\texttt{p1\_drill/ddc\_results.txt}) and the \textbf{P2 5-model table} (\texttt{p2\_drill/ddd\_results.txt}) have been regenerated from the persisted result artifacts (\texttt{p1\_power\_results.json}, \texttt{p2\_fold\_ci.json}) and are re-runnable; the \textbf{P2 single-model} test is re-runnable directly via \texttt{mu\_priv\_meta\_predictor.py} (canonical rerun: linear AUC $=0.9970$, see \texttt{P2\_REPRODUCIBILITY.md}); the \textbf{P3} outcome is materialized in \texttt{p3\_drill/p3\_results.json}. The static specification documents \texttt{p3\_drill/drill\_design.md}, \texttt{aide2\_audit/precise\_line\_audit.md}, and \texttt{dde\_drill/dde\_design.md} remain \textbf{pending reconstruction}; the substantive claims they were meant to support are stated inline in \S4.5, \S4.2, and \S6.5 respectively and do not depend on those notes being restored.

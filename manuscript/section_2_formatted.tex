@@ -1,0 +1,69 @@
+% Section 2 -- Related Work
+
+The literature relevant to bi-level recursive self-improvement (RSI) and audit-channel-aware agent systems spans five areas. We map each to our framework and note where our contributions extend or differ.
+
+\subsection{RSI Concept and Empirical Claims}
+
+The notion of RSI traces to Good \cite{good1965speculations} and was formalized in AI-safety literature (Yudkowsky \cite{yudkowsky2008artificial}; Omohundro \cite{omohundro2008basic}; Bostrom \cite{bostrom2014superintelligence}). Steinhardt \cite{steinhardt2023secret} (2023) enumerates 7 operational definitions in the literature and concludes that no single system has yet satisfied any of them under strict measurement criteria.
+
+Weco AI's AIDE\textsuperscript{2} (Jiang et al. 2026) is the strongest empirical candidate to date: 8-day wall-clock, 100 outer-loop steps, $\sim$9/10 proposed rewrites rejected, with three external benchmarks (MLE-Bench Lite, ALE-Bench Lite, WeatherBench 2) beating a hand-tuned baseline. The team proposes a 4-level \emph{RSI Ladder} (delegation / net positive / ignition / inflection) and locates AIDE\textsuperscript{2} at \emph{Level 1 net positive} under a strict cost-and-generalization protocol.
+
+\textbf{Our framing of AIDE\textsuperscript{2}}. We treat AIDE\textsuperscript{2} as a \emph{specimen} of bi-level RSI rather than a definitive proof of RSI. In \S3 we encode AIDE\textsuperscript{2}'s two-loop architecture in our formalization; in \S4 we instantiate the audit channel. The RSI Ladder's \emph{Level 1} is operationalized in our framework as a property of the outer-loop selection pressure (P2 in \S3.4).
+
+\subsubsection{Search in Code and Algorithm Spaces}
+
+Bi-level RSI inherits heavily from classical code-space search and evolutionary search:
+\begin{itemize}
+    \item \textbf{AlphaGo Zero / AlphaZero} (Silver et al. \cite{silver2017mastering, silver2018alphazero}): foundational self-play systems but operate within a fixed neural architecture and reward signal, not an explicit code space.
+    \item \textbf{AutoML-Zero} (Real et al. \cite{real2020automl}): evolutionary search over ML algorithm primitives in a code space. Compared with AIDE\textsuperscript{2}, AutoML-Zero lacks an LLM-based outer-loop and lacks a public/private score split.
+    \item \textbf{FunSearch} (Romera-Paredes et al. \cite{romeraparedes2023mathematical}): LLM-based code discovery with single-loop evolution; provides a concrete code-space search baseline.
+    \item \textbf{Voyager} (Wang et al. \cite{wang2023voyager}): LLM-driven skill library accumulation with persistent state; an \emph{environment-side} analogue of AIDE\textsuperscript{2}'s outer loop.
+\end{itemize}
+
+\textbf{Our distinction}: Bi-Level PEPA operates at a higher level of abstraction than these systems. We do not propose a search algorithm; we propose a \emph{protocol} under which any such algorithm can be evaluated for audit-channel adequacy. The audit channel $\alpha$ is our chief contribution in this dimension.
+
+\subsubsection{Access Control and Policy Architectures}
+
+Our framework adopts terminology from access control literature, in particular:
+\begin{itemize}
+    \item \textbf{NIST SP 800-162} (Hu et al. \cite{nist2014abac}): the canonical reference for attribute-based access control (ABAC). The PDP/PEP/PAP triplet is foundational to our audit channel.
+    \item \textbf{Cedar} (Bandhakavi et al. \cite{bandhakavi2008cedar}): AWS's authorization policy language with formal verification properties. We adopt Cedar's separation of policy decisions from enforcement.
+    \item \textbf{Rego / OPA} (CNCF \cite{cncf2021opa}): declarative policy language with formal semantics; the dominant open-source authorization framework.
+    \item \textbf{Multi-PDP and sidecar-PDP patterns}: industry practice (e.g., BeyondCorp at Google, AWS IAM) where authorization decisions are mediated by multiple independent PDPs to prevent single-point tampering.
+\end{itemize}
+
+\textbf{Our extension}: Bi-Level PEPA introduces a \emph{third} dimension (audit channel $\alpha$) that classical ABAC literature treats as out-of-scope. We argue this dimension is precisely what is missing in current bi-level RSI architectures, including AIDE\textsuperscript{2}.
+
+\subsubsection{AI-Eval and Reward Hacking Literature}
+
+The empirical evidence for ``emergent'' anti-reward-hacking in AIDE\textsuperscript{2} connects to:
+\begin{itemize}
+    \item \textbf{SpecBench} (Weco AI \cite{weco2024specbench}): the measurement framework underlying AIDE\textsuperscript{2}'s reward-hacking rate observations. Our \S4.5 connects this measurement protocol to our P3 prediction.
+    \item \textbf{Reward hacking in RLHF} (Skalse et al. \cite{skalse2022rewardhacking}; Gao et al. \cite{gao2023rewardhackingllms}): formal frameworks for Goodhart's Law in agent training. Our framework differs in that \emph{the inner-loop agent} does not directly optimize against $\mu_{\text{priv}}$; we instead model the outer-loop's gating function as the locus of metric gaming.
+    \item \textbf{Agent OS Reference Architecture V1-V7}: a companion framework for control-plane specification of multi-agent systems. The V1-V7 specifications enumerate a 9-layer composition and 25 documented vulnerabilities across the cognitive, capability, data, and control planes; these specifications are companion material to the present paper rather than prior work. We treat the V1-V7 enumeration as boundary conditions on V8 \S11 (Resource Contracts) and \S14 (Red-Team Harness), which we develop as instantiations of Bi-Level PEPA's recommendations in Appendix B.
+\end{itemize}
+
+\textbf{Our distinction}: While reward-hacking literature focuses on \emph{the reward signal}, Bi-Level PEPA focuses on \emph{the audit channel} through which the reward signal is mediated. P2 (ungameability) and P3 (audit-channel capacity equivalence) both concern channel properties, not signal properties.
+
+\subsubsection{Positioning of This Work}
+
+Compared to existing work, our contribution is:
+
+\begin{table}[h]
+\centering
+\caption{Positioning of Bi-Level PEPA against five related-work areas. We highlight three dimensions: (i) the protocol/architecture dimension (what artifact the prior work delivers); (ii) the audit-channel dimension (whether the prior work addresses $\alpha$ explicitly); (iii) the empirical dimension (what evidence type the prior work supplies).}
+\label{tab:positioning}
+\begin{tabular}{p{0.30\textwidth} p{0.30\textwidth} p{0.30\textwidth}}
+\toprule
+\textbf{Dimension} & \textbf{Prior work} & \textbf{Bi-Level PEPA (this paper)} \\
+\midrule
+Bi-level RSI architecture & AIDE\textsuperscript{2} (Weco AI 2026): a concrete two-loop system with a 4-level RSI Ladder & Formal protocol $(\Lambda, \Omega, \mu_{\text{pub}}, \mu_{\text{priv}}, \rho, B, \delta)$ with explicit audit-channel predicate \\
+Outer-loop selection & Weco's protocol: 9/10 acceptance-rejection based on $\mu_{\text{priv}} > \tau$ & Formal acceptance function $\mu_{\text{priv}}^t > \mu_{\text{priv}}^{t-1} - \epsilon_{\text{keep}}$ with audit-channel logging \\
+Anti-reward-hacking & AIDE\textsuperscript{2}'s L1 (prompt), L2 (output guard), L3 (statistical); L3 broken per Weco's report & $\alpha$-capacity axiom + P3 formal equivalence (Appendix~E) \\
+Access-control vocabulary & NIST SP 800-162 (PDP/PEP/PAP), Cedar, OPA/Rego & adds $\alpha$ as a first-class object on top of PDP/PEP/PAP \\
+Empirical evaluation & MLE-Bench / ALE-Bench / WeatherBench 2 benchmarks (3 external) & $\mu_{\text{priv}}$-predictability test (P2) on synthetic data with 5-model robustness (DDD) + $\sigma$-amplification analysis (DDC) + 4-condition $\times$ 30-step P3 ablation design (DDB) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+We treat this paper as a \emph{methods paper} in the sense of TMLR's methodology: it defines a formal framework and instantiates it on a single concrete system (AIDE\textsuperscript{2}), leaving broader empirical confirmation to future work. We do not claim that Bi-Level PEPA covers all RSI systems --- only that it provides a useful protocol for \emph{any} bi-level agent architecture where an outer-loop rewrites an inner-loop.

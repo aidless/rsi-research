@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深度检索报告 · RSI 递归自我改进 深入研究</title>
+<style>
+:root{
+  /* 主色 60% —— 暖白底，安静基调 */
+  --bg:#faf9f7;
+  --card:#ffffff;
+  --card-soft:#fbfaf8;
+  /* 辅色 30% —— 深灰文字 + 极浅暖灰分割 */
+  --ink:#2b2f36;
+  --ink-2:#6b7280;
+  --line:#eceae6;
+  /* 点睛 10% —— 黛青(内/主强调) / 珊瑚橙(外/关键数据) / 中性灰(未覆盖·历史) */
+  --accent:#2f4858;
+  --accent-deep:#1f3a5f;
+  --point:#d9684a;
+  --muted:#9aa0a6;
+  /* 三字体体系：展示(宋) / 阅读(黑) / 数据(等宽) */
+  --serif:"Noto Serif SC","Source Han Serif SC",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:"Inter","JetBrains Mono",monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--ink);
+  padding:40px 32px;
+  line-height:1.7;
+}
+.report {
+  max-width:820px;
+  margin:0 auto;
+  background:var(--card);
+  border-radius:12px;
+  box-shadow:0 2px 16px rgba(43,47,54,.05);
+  overflow:hidden;
+}
+/* header —— 暖白底 + 黛青点睛条，去渐变 */
+.header {
+  background:var(--card);
+  border-top:4px solid var(--accent);
+  border-bottom:1px solid var(--line);
+  color:var(--ink);
+  padding:32px;
+}
+.header .kicker { font-family:var(--sans); font-size:13px; color:var(--muted); letter-spacing:1px; }
+.header h1 { font-family:var(--serif); font-size:22px; color:var(--accent); margin:8px 0 16px; font-weight:700; }
+.meta { display:flex; flex-wrap:wrap; gap:8px 20px; font-size:13px; color:var(--ink-2); }
+.meta b { font-weight:600; color:var(--ink); }
+.chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+.chip { background:#f1efea; padding:4px 12px; border-radius:999px; font-size:12px; color:var(--ink-2); }
+/* body */
+.body { padding:32px 32px 24px; }
+h2 {
+  font-family:var(--serif);
+  font-size:18px; color:var(--accent); margin:32px 0 16px;
+  display:flex; align-items:center; gap:8px;
+}
+h2::before { content:""; width:4px; height:18px; background:var(--accent); border-radius:2px; }
+/* conclusion cards */
+.grid { display:grid; grid-template-columns:1fr; gap:16px; }
+.card {
+  display:flex; gap:14px; align-items:flex-start;
+  background:var(--card-soft); border:1px solid var(--line); border-radius:10px;
+  padding:16px 20px; border-left:4px solid var(--muted);
+}
+.card .num { font-family:var(--mono); font-weight:700; color:var(--muted); font-size:14px; min-width:22px; }
+.card .txt { flex:1; font-size:14px; }
+.card.s-in { border-left-color:var(--accent); }
+.card.s-out { border-left-color:var(--point); }
+.card.s-both { border-left-color:var(--accent-deep); }
+.card.s-gap { border-left-color:var(--muted); }
+.badge {
+  display:inline-block; font-family:var(--sans); font-size:11px; font-weight:600;
+  padding:2px 8px; border-radius:999px; margin-right:6px; vertical-align:1px;
+}
+.b-in { background:#e7ecf0; color:#2f4858; }
+.b-out { background:#fbe9e3; color:#c0533a; }
+.b-both { background:#e3e9f0; color:#1f3a5f; }
+.b-gap { background:#f1efea; color:#6b7280; }
+/* table */
+table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+th { background:#f3f1ec; text-align:left; padding:10px; font-weight:600; color:var(--ink-2); }
+td { padding:10px; border-bottom:1px solid var(--line); vertical-align:top; }
+tr:last-child td { border-bottom:none; }
+/* source lists */
+.src-block { background:var(--card-soft); border:1px solid var(--line); border-radius:10px; padding:16px 20px; margin-top:16px; font-size:13px; }
+.src-block h4 { font-family:var(--sans); font-size:13px; margin-bottom:8px; color:var(--ink); }
+.src-block ul { list-style:none; }
+.src-block li { padding:4px 0; }
+.src-block .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:8px; }
+.dot-in { background:var(--accent); } .dot-out { background:var(--point); } .dot-his { background:var(--accent); }
+code { font-family:var(--mono); background:#f3f1ec; padding:1px 5px; border-radius:4px; font-size:12px; color:var(--ink); }
+/* footer */
+.footer { background:var(--card-soft); border-top:1px solid var(--line); padding:20px 32px 24px; font-size:12px; color:var(--muted); }
+.disclaimer { font-style:italic; color:var(--ink-2); margin-top:6px; }
+/* print */
+@media print { body{background:#fff;padding:0} .report{box-shadow:none;border-radius:0} }
+</style>
+</head>
+<body>
+<div class="report">
+  <div class="header">
+    <div class="kicker">深度检索报告 · DEEP-RESEARCH</div>
+    <h1>RSI 递归自我改进 深入研究</h1>
+    <div class="meta">
+      <span><b>范围</b>：工作区自有产出盘点 + 2610.* 领域进展 + 外部一手锚点</span>
+      <span><b>来源</b>：内部 15 · 外部 9</span>
+      <span><b>日期</b>：2026-11-18</span>
+    </div>
+    <div class="chips">
+      <span class="chip">检索路径：文件定位 → 实体消歧 → 号-题验号 → 联网</span>
+      <span class="chip">检索模式：3 子代理并行 + 关键词 + 全文深读</span>
+      <span class="chip">查询改写：无（精确标识主导）</span>
+    </div>
+  </div>
+
+  <div class="body">
+    <h2>核心结论</h2>
+    <div class="grid">
+      <div class="card s-in">
+        <div class="num">1</div>
+        <div class="txt"><span class="badge b-in">内</span><b>4 类资产全部 unreviewed</b>：Dream-RSI 复现、Auditable RSI 骨架稿、paper_gate_review_r2、2610.* 情报跟踪——无活跃实验。</div>
+      </div>
+      <div class="card s-both">
+        <div class="num">2</div>
+        <div class="txt"><span class="badge b-both">内+外</span><b>领域进入可证伪反面结果阶段</b>：CODA 抹掉增益 52–93%、TEB 靠 rescore 白涨、2610.14662 的 145 条修改无定向优势。</div>
+      </div>
+      <div class="card s-both">
+        <div class="num">3</div>
+        <div class="txt"><span class="badge b-both">内+外</span><b>P1/P2/P3 都不够判真伪</b>：P1 缺噪声下界本体实验；P2 只有 synthetic R²≈0.9957；P3"等价"强于博客的 "a possible explanation"。</div>
+      </div>
+      <div class="card s-in">
+        <div class="num">4</div>
+        <div class="txt"><span class="badge b-in">内</span><b>Auditable RSI 正文完整找回，PROVEN</b>：真源在 <DATA_ROOT>，本次逐字恢复到 <code>recovered/auditable-rsi/</code>（47 文件）；四份 sha256 全为 a40d6df5…、cmp 逐字节相同、main.pdf 37 页——是完整投稿包非 507 词骨架，但 P2 实证仍是 synthetic。</div>
+      </div>
+      <div class="card s-both">
+        <div class="num">5</div>
+        <div class="txt"><span class="badge b-both">内+外</span><b>五键门自否定实测</b>：false-promotion 0.0125 ≈ unpaired 0.0150，保护来自显著性检验本身而非五键结构——与 2610.19789 同向。</div>
+      </div>
+      <div class="card s-in">
+        <div class="num">6</div>
+        <div class="txt"><span class="badge b-in">内</span><b>正文恢复证据达第 5 级</b>：路径血缘/接口/编译/hash 五级全过，真源 mtime 10-23 早于 review-packet 10-28，判定 PROVEN 非 CIRCULAR；dsh 会话重放失败（0 条 diff），最终靠整机搜索定位。</div>
+      </div>
+    </div>
+
+    <h2>关键要点</h2>
+    <div class="src-block">
+      <ul>
+        <li>你的 RSI 线有两份可重启的完整资产：<code>recovered/auditable-rsi/</code>（37 页完整投稿包，本次找回）与 <code>paper_gate_review_r2/</code>（真凭链 + 一条诚实自否定结论，C15/§7 口径矛盾只差下一轮处置）；共同短板是 P2 实证缺失。</li>
+        <li><code>stall_detector.py</code> 的四臂就是阈值校准集（in-sample）：11/11 自检是"复现校准"，不能当泛化性能引用。</li>
+        <li>领域可证伪性现在主要来自反面结果（CODA / TEB / 2610.14662 / AIDE² 非单调泛化），不是新的正向框架。</li>
+        <li>P3 的"等价性"应降级为"相关性"，除非在真实 lineage 上同测 audit-channel capacity 与 hacking rate 并给反例判据。</li>
+      </ul>
+    </div>
+
+    <h2>证据清单</h2>
+    <p style="font-size:12px;color:var(--ink-2);margin:0 0 8px;">标记说明：内 = 内部落盘资料；外部一手来源标 [外]，出处见 <a href="https://arxiv.org/abs/2609.14858">arXiv:2609.14858</a> 等 9 条（号-题已验）；交叉印证 = 内+外；⚠ = 证据不足</p>
+    <table>
+      <tr><th>#</th><th>结论摘要</th><th>支撑</th><th>口径</th><th>来源</th></tr>
+      <tr><td>1</td><td>stall_detector 11/11 + 四臂 replay，阈值 in-sample</td><td><span class="badge b-in">内</span></td><td>L1</td><td><code>stall_detector.py</code> · <code>notes/2026-11-18-rsi-failure-modes.md:38-56</code></td></tr>
+      <tr><td>2</td><td>Auditable RSI 正文完整找回，四份 hash 匹配、cmp 相同、37 页</td><td><span class="badge b-in">内</span></td><td>L1</td><td><code>recovered/auditable-rsi/main.tex</code> · <code>notes/2026-11-18-auditable-rsi-recovery.md:6-14</code></td></tr>
+      <tr><td>3</td><td>2610.* 四轴分类 + 35 篇验号 + 反面结果</td><td><span class="badge b-in">内</span></td><td>L3</td><td><code>notes/2026-11-18-rsi-landscape.md</code> · <code>agent-landscape-2026-10/report.md:101-112</code></td></tr>
+      <tr><td>4</td><td>F1–F8 失败模式 + P1/P2/P3 判据 + 四级证据边界</td><td><span class="badge b-in">内</span></td><td>L1/L4</td><td><code>notes/2026-11-18-rsi-failure-modes.md:21-30,69-91</code></td></tr>
+      <tr><td>5</td><td>五键门 0.0125 ≈ unpaired 0.0150</td><td><span class="badge b-in">内</span></td><td>L1</td><td><code>paper_gate_review_r2/main.tex:63-69</code></td></tr>
+      <tr><td>6</td><td>Dream-RSI 号-题一致（2026-09-14）</td><td><span class="badge b-out">外</span></td><td>L2</td><td><a href="https://arxiv.org/abs/2609.14858">arXiv:2609.14858</a></td></tr>
+      <tr><td>7</td><td>AIDE² 100 步/8 天/9-of-10 拒/63→34%/ignition 无强证据</td><td><span class="badge b-out">外</span></td><td>L2</td><td><a href="https://www.weco.ai/blog/first-evidence-of-recursive-self-improvement">Weco AIDE² 博客</a> · <a href="https://arxiv.org/abs/2609.26457">arXiv:2609.26457</a></td></tr>
+      <tr><td>8</td><td>RSI 九维分类学主干</td><td><span class="badge b-out">外</span></td><td>L2</td><td><a href="https://arxiv.org/abs/2610.14625">arXiv:2610.14625</a></td></tr>
+      <tr><td>9</td><td>CODA 抹掉共进化增益 52–93%</td><td><span class="badge b-out">外</span></td><td>L2</td><td><a href="https://arxiv.org/abs/2610.20845">arXiv:2610.20845</a></td></tr>
+      <tr><td>10</td><td>145 条修改无 target-specific advantage</td><td><span class="badge b-out">外</span></td><td>L2</td><td><a href="https://arxiv.org/abs/2610.14662">arXiv:2610.14662</a></td></tr>
+      <tr><td>11</td><td>正文恢复五级证据链全过，PROVEN 非 CIRCULAR</td><td><span class="badge b-in">内</span></td><td>L1</td><td><code>notes/2026-11-18-auditable-rsi-recovery.md:32-44</code></td></tr>
+    </table>
+
+    <h2>口径与来源（进阶）</h2>
+    <div class="src-block">
+      <ul>
+        <li><b>实体解析</b>："Auditable RSI" → <code>bi-level-pepa</code>（源 <code>&lt;WORKSPACE_ROOT&gt;/.research/bi-level-pepa/main.tex</code>）；与 <code>paper_gate_review_r2</code>（Fail-Closed Auditable Promotion Gates）是两篇不同稿件，勿混。</li>
+        <li><b>术语口径</b>：Level 1 / Level 2 / ignition / third-order generalization 采用 Weco 4 Levels；"可证伪"按预注册阈值方向；外部摘要数字为证据等级 B（未 PDF 复算）。</li>
+        <li><b>数据状态</b>：内部台账截至 2026-11-18；领域论文截至 2026-10；外部核验 2026-11-18。</li>
+      </ul>
+    </div>
+
+    <h2>来源分区</h2>
+    <div class="src-block">
+      <h4>内部资料（15）</h4>
+      <ul>
+        <li><span class="dot dot-in"></span><code>stall_detector.py</code> · <code>dream-rsi-fig5-data.json</code> · <code>Dream-RSI.pdf</code>（sha256 5701649c…）</li>
+        <li><span class="dot dot-in"></span><code>notes/2026-11-18-rsi-landscape.md</code>（188 行）· <code>notes/2026-11-18-rsi-failure-modes.md</code>（117 行）· <code>notes/2026-11-18-auditable-rsi-recovery.md</code>（110 行）</li>
+        <li><span class="dot dot-in"></span><code>recovered/auditable-rsi/</code>（47 文件整投稿包，main.tex sha256 a40d6df5…，main.pdf 37 页）</li>
+        <li><span class="dot dot-in"></span><code>paper_gate_review_r2/main.tex</code> · <code>TRANSFER_RECORD.md</code> · <code>CLAIM_LEDGER.md</code></li>
+        <li><span class="dot dot-in"></span><code>.agent-memory/grade55/meta.json</code> / <code>digest.md:18-21</code></li>
+        <li><span class="dot dot-in"></span><code>review-packets/qf-auditable-recursive-self-improvement-…-e2b788577f.json</code></li>
+        <li><span class="dot dot-in"></span><code>paper-portfolio.md:90</code> · <code>triage.md:86</code> · <code>agent-dispositions.md:101</code> · <code>论文总结_2026-11-01.md:77</code></li>
+        <li><span class="dot dot-in"></span><code>agent-landscape-2026-10/report.md:101-112</code> · <code>harnesspro-dig/paper-skeleton-test-quality.md:26</code></li>
+        <li><span class="dot dot-in"></span><code>aidless-maintenance/patches/H1-seed-readme/bi-level-pepa/README.md</code>（Status: reserved，非本稿）</li>
+      </ul>
+    </div>
+    <div class="src-block">
+      <h4>公开信息（9）</h4>
+      <ul>
+        <li><span class="dot dot-out"></span><a href="https://arxiv.org/abs/2609.14858">Dream-RSI: Recursive Self-Improvement through Evolving Worlds（2609.14858）</a></li>
+        <li><span class="dot dot-out"></span><a href="https://arxiv.org/abs/2609.26457">Recursive self-improvement of AI research agents（2609.26457）</a></li>
+        <li><span class="dot dot-out"></span><a href="https://www.weco.ai/blog/first-evidence-of-recursive-self-improvement">AIDE²: The First Evidence of Recursive Self-Improvement（Weco AI）</a></li>
+        <li><span class="dot dot-out"></span><a href="https://www.weco.ai/blog/4-levels-of-recursive-self-improvement">4 Levels of Recursive Self-Improvement（Weco AI）</a></li>
+        <li><span class="dot dot-out"></span><a href="https://arxiv.org/abs/2610.14625">From Existing Methods to New Research Ideas: Two Perspectives on RSI（2610.14625）</a></li>
+        <li><span class="dot dot-out"></span><a href="https://arxiv.org/abs/2610.20845">Evolving Together, Failing Apart: The Skill-Policy Co-evolution Trap（2610.20845）</a></li>
+        <li><span class="dot dot-out"></span><a href="https://arxiv.org/abs/2610.14662">Does Failure Feedback Direct Agent Self-Modification?（2610.14662）</a></li>
+        <li><span class="dot dot-out"></span><a href="https://arxiv.org/abs/2610.19789">More Methods, Better Agents? A Reality Check on Self-Distillation（2610.19789）</a></li>
+        <li><span class="dot dot-out"></span>其余 35 篇验号清单见 <code>notes/2026-11-18-rsi-landscape.md:21-63</code></li>
+      </ul>
+    </div>
+
+    <h2>研究方法</h2>
+    <div class="src-block">
+      <ul>
+        <li><b>子问题</b>：① 手上有哪些 RSI 产出及状态；② 2610.* 领域到了哪个阶段；③ 自有产出的证据强度与失败模式；④ P1/P2/P3 能否判真伪。</li>
+        <li><b>检索查询</b>：3 子代理本地并行 + 主会话 web_search 1 组 + web_fetch 深读 3 篇。</li>
+        <li><b>唯一来源</b>：landscape 35 篇 + failure 5 篇（均 HTTP200 号-题一致）+ 主会话独立核实 3 个来源。</li>
+        <li><b>深读篇数</b>：Top 3（WebFetch 全文）；其余仅交叉印证。</li>
+        <li><b>源优先级</b>：arXiv abs 页 / 官方博客 &gt; 落盘摘要台账（B 级）&gt; 推断（L4）。</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 免责声明：按触发条件保留 -->
+  <div class="footer">
+    <div class="disclaimer">⚠️ 本报告基于现有知识库资料的整理归纳，信息以原始资料为准，不构成专业医疗/法律/投资/教育等建议。</div>
+    <div style="margin-top:4px;">生成：deep-research skill · md 底稿与证据表随 HTML 一并交付</div>
+  </div>
+</div>
+</body>
+</html>

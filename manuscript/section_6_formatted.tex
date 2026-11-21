@@ -1,0 +1,85 @@
+% Section 6 -- Limitations and Open Questions
+
+We acknowledge five classes of limitations in this work.
+
+\subsection{Empirical Limitations}
+
+\textbf{Synthetic data on the $\mu_{\text{priv}}$-predictability test (\S4.4)}. Our P2 test runs on synthetic data calibrated to Weco's reported statistics. Real AIDE85 lineage (not yet released as of 2026-07-16) may have qualitatively different characteristics. The result is \emph{directional}, not \emph{confirmatory}.
+
+\textbf{Single specimen}. We instantiate Bi-Level PEPA on AIDE\textsuperscript{2} only. AIDE\textsuperscript{2} is the strongest empirical bi-level RSI candidate to date, but the framework's generality requires future verification on RL-based prompt search, AutoML-Zero extensions, and enterprise multi-agent systems (\S4.6).
+
+\textbf{Source-code review} (\S4.2). Our audit-channel-status analysis relies on AIDE0 source code (open-sourced) and Weco's blog (descriptive). We do not have access to AIDE85's evolved source code, so a \emph{direct} test of P3 on real AIDE85 lineage is not yet possible.
+
+\subsection{Conceptual Limitations}
+
+\textbf{``Ungameable'' is a strong assumption} (\S3.4 P2). Our P2 prediction requires $\mu_{\text{priv}}$ to be polynomially-impossible to compute from public history. This is a strong claim; we do not establish necessity, only sufficiency under our formalization. Tighter formal analysis would relax ``ungameable'' to ``non-trivial-to-compute'' and quantify the threshold.
+
+\textbf{$\alpha$ is one abstraction level} (\S3.3). We treat the audit channel $\alpha$ as a single object. In practice, $\alpha$ may have multiple layers (cryptographic commitment at the byte level, policy decision at the rule level, alert at the human-officer level). A more nuanced hierarchy is an open direction for future work.
+
+\textbf{Tautology risk in P3} (\S3.4). P3's claim that ``anti-reward-hacking evolution $\equiv$ $\alpha$-capacity evolution'' may be tautological if $\alpha$ is operationalized as the very mechanism that filters reward hacking. We mitigate this in \S4.5 by operationalizing $\alpha$ concretely (L1 / L2 / L3 layers), but the deeper question --- \emph{what exactly counts as audit-channel evolution} --- remains open.
+
+\subsection{Implementation Gap}
+
+\textbf{Framework is descriptive, not constructive} (\S5). Bi-Level PEPA is a formalization. We supply architectural recommendations (R1--R4) and a 5-probe red-team harness, but we do not ship a fully deployed Bi-Level-PEPA-compliant implementation of AIDE\textsuperscript{2}. Future work should provide such an implementation.
+
+\textbf{No Weco-validated review}. We offered Weco pre-submission review (email draft on 2026-07-16; no response as of submission). The \S4.2 audit-channel mapping is based on AIDE\textsuperscript{2}'s public blog post and AIDE0's open-source code; refinements from Weco would improve accuracy. The framework's structural claims (R1--R4, $\alpha$ as first-class object) do not depend on Weco's endorsement.
+
+\textbf{Dependency on external artifact availability}. Our P2 test depends on the future release (or private sharing) of AIDE85 lineage. Without it, our \S4.4 result is directional only.
+
+\subsection{Scope Boundary}
+
+\textbf{Out of scope for this paper}:
+\begin{itemize}
+    \item \emph{Cognitive architectures}: We do not address how $\Lambda$ reasons about the audit channel, only how $\Omega$ uses it. A complementary study of $\Lambda$'s \emph{awareness} of $\alpha$ would be valuable.
+    \item \emph{Long-horizon safety}: We treat bi-level RSI as a \emph{short-loop} (8-day) phenomenon. Long-horizon RSI ($>1$ year) has qualitatively different dynamics (degradation, drift, accumulated error). We leave this to follow-up.
+    \item \emph{Multi-PDP marketplaces}: The Agent OS V8 \S13 (governance bootstrapping) addresses multi-PDP marketplaces. Bi-Level PEPA as presented does not directly cover this case.
+    \item \emph{Alignment under self-modification}: \S5 R1 (cryptographic commitment to $\mu_{\text{priv}}$) addresses \emph{one} alignment mechanism. Comprehensive alignment under bi-level self-modification is out of scope.
+\end{itemize}
+
+\subsection{Honesty Constraints We Imposed}
+
+\textbf{Hedged causal language throughout}. We use ``consistent with'', ``directional'', and ``supports the framework'' rather than absolute causal wording. This is a deliberate scientific-writing choice; reviewers may find our claims under-stated.
+
+\textbf{No claim of new theory}. We treat Bi-Level PEPA as an \emph{honest-grade synthesis} of access-control vocabulary with bi-level agent architectures. We do not claim a frontier contribution; we claim a useful protocol.
+
+\textbf{Synthetic results prominently disclosed}. Every empirical claim is paired with a ``synthetic'' or ``directional'' caveat in the running text. Reviewers should not mistake \S4.4's canonical $\text{AUC}=0.9970$ (10-fold CV mean $0.9957\pm0.0027$) for an empirical confirmation of P2 --- it is a controlled-synthetic-data demonstration only, and the generator is structurally circular (see \S4.4), so no confirmatory claim is made.
+
+
+\subsection{Claim Tier Annotation}
+
+Claims are explicitly annotated by evidence tier so that reviewers can distinguish what is proven, what is simulation-supported, and what is a design suggestion:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lp{0.62\linewidth}}
+\toprule
+Tier & Claims \\
+\midrule
+\textbf{1. Theorem-level} & P1 noise bound (Appendix C); P2 necessity lemmas (Appendix D); P3 equivalence statement (Appendix E; labelled conjecture, not a theorem). \\
+\textbf{2. Simulation-supported} & P2 meta-predictor AUC (canonical single-split rerun: linear 0.9970, seed 0; 10-fold CV mean 0.9957 $\pm$ 0.0027, 5 seeds); 5-model robustness; $\rho$ sensitivity (0.5--0.95); calibration-input perturbation (noise $\sigma \in \{0.015, 0.025, 0.045\}$). Circular-generator caveat disclosed in \S4.4. \\
+\textbf{3. Design suggestion} & Architectural recommendations R1--R4 (governance guidance; no empirical claim). \\
+\bottomrule
+\end{tabular}
+\caption{Claim-tier annotation. Tier-2 values come from \texttt{experiments/p2\_falsification/p2\_fold\_ci.py} (canonical).}
+\label{tab:claim_tiers}
+\end{table}
+\textbf{Cross-section consistency verified (DDE)}: We have run a cross-section consistency check across \S3--\S6, including $\sigma_\mu$ value consistency (canonical 0.04 throughout), L2 mechanism description (LLM-judged + type check, post-DDA precision), and all numerical values ($T = 100$, $N_{\text{inner}} = 5$, $\rho = 0.7$). The DDE consistency report (\texttt{dde\_drill/dde\_design.md}) documents the six checks performed and the two inconsistencies fixed.
+
+\textbf{Depth-drill artifacts disclosed}: The 5 depth-drill artifacts (DDA: \texttt{aide2\_audit/precise\_line\_audit.md}; DDB: \texttt{p3\_drill/drill\_design.md}; DDC: \texttt{p1\_drill/outer\_loop\_correlation.py}; DDD: \texttt{p2\_drill/model\_class\_robustness.py}; DDE: \texttt{dde\_drill/dde\_design.md}) are companion depth-drill artifacts to the main paper. They are not part of the core framework but materializing the \S3--\S4 claims into executable form. Reviewers may treat them as either ``supplementary material'' (default reading) or ``auxiliary specifications'' (for replication). See \S7.5 for the consolidated evidence-chain table.
+
+\subsection{Open Questions for Future Work}
+
+Concretely, we identify the following as the highest-priority open questions:
+\begin{enumerate}
+    \item \textbf{Empirical P2 on real AIDE85 lineage}: requires Weco artifact release.
+    \item \textbf{Cross-system validation}: instantiate Bi-Level PEPA on at least one other bi-level RSI system.
+    \item \textbf{Audit-channel hierarchy}: develop a multi-layer $\alpha$ abstraction.
+    \item \textbf{Operational definition of $\alpha$-capacity}: tighten P3 against tautology.
+    \item \textbf{Ablation experiments for P3}: forced disabling of L1/L2 in AIDE\textsuperscript{2} (requires AIDE85 access). The DDB-Drill protocol (\S4.5) has been executed in simulation (2026-08-09; 4 conditions $\times$ 100 trials, \texttt{experiments/p3\_drill/}): P3 supported (graded). The formal real-lineage 4-condition $\times$ 30-step ablation remains open future work.
+    \item \textbf{Integration with V1-V7}: produce full V8 \S11+\S12+\S13+\S14 spec aligned with Bi-Level PEPA. See Appendix B for the current alignment of V8 \S11 (Resource Contracts) and \S14 (Red-Team Harness) with R1--R4.
+    \item \textbf{DDC simulator $\rho$ calibration}: the working benchmark $\rho = 0.7$ in \S4.3 is a design choice consistent with Weco's protocol details ($\Omega$ maintains continuity across iterations). Empirical $\rho$ estimation from AIDE85 lineage is required to tighten the \S3.4 P1 quantitative bound.
+    \item \textbf{DDD real-data robustness}: the 5-model robustness test in \S4.4 is on synthetic data; real-lineage verification would require the same 5-model comparison on actual AIDE85 trajectories.
+\end{enumerate}
+
+We expect items 1, 2, 5, 7, 8 to be straightforward follow-up work contingent on Weco artifact release; items 3 and 4 require deeper theoretical development; item 6 requires community coordination. The depth-drill artifacts (DDA--DDF) provide the methodological infrastructure for items 7 and 8 specifically.

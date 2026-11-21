@@ -1,0 +1,30 @@
+{
+  "honest": {
+    "passed": true,
+    "reason": "PASS: se=0.0000 gap=0.0000 sat=0.0000",
+    "selection_error": 0.0,
+    "signed_gap": 0.0,
+    "saturation": 0.0,
+    "n_probes": 60
+  },
+  "padding": {
+    "passed": false,
+    "reason": "OPTIMISTIC_GAP: gap=0.2700>0.0",
+    "selection_error": 0.0,
+    "signed_gap": 0.27,
+    "saturation": 0.0,
+    "n_probes": 60
+  },
+  "random_proxy": {
+    "passed": false,
+    "reason": "SELECTION_CORRUPTED: se=0.5475>0.15",
+    "selection_error": 0.547458,
+    "signed_gap": 0.495529,
+    "saturation": 0.0,
+    "n_probes": 60
+  },
+  "n_probes": 60,
+  "probe_true_quality_min": -1.1323636796875,
+  "probe_true_quality_max": 1.2423824140625,
+  "distinct_true_quality": 60
+}

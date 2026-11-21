@@ -1,0 +1,39 @@
+{
+  "schema": "figure-trace-report/1",
+  "traces": [
+    {
+      "artifact_id": "tab:system-description",
+      "verdict": "PASS",
+      "issues": [],
+      "advisories": [
+        "[CAPTION-PAIRED] caption_claim 已与稿件 label tab:system-description 自己的 \\caption{} 对上"
+      ],
+      "covered_lines": [
+        "L242",
+        "L479"
+      ]
+    }
+  ],
+  "untraced": [],
+  "overrides": [],
+  "unresolved_from_first_gate": [],
+  "prior_trustworthy": true,
+  "blocked": false,
+  "verdict": "PASS",
+  "external_facts": {
+    "schema": "external-fact-report/1",
+    "rows": [],
+    "blocked": false,
+    "verdict_counts": {
+      "SELF_CONTRADICTED": 0,
+      "CONFLICT": 0,
+      "REFUTED": 0,
+      "UNVERIFIED": 0,
+      "SUPPORTED": 0
+    },
+    "block_reasons": [],
+    "scope_note": "本槽只判「外部事实有没有被核过、核的结果对不对」，不判该事实本身"
+  },
+  "block_reasons": [],
+  "note": "本闸只判溯源与叙事对不对；视觉渲染合规（10 条 checklist）见 .agent-memory/research/figure_verification_skill.md"
+}

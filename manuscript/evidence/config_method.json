@@ -1,0 +1,10 @@
+{
+ "single_split_auc": 0.997,
+ "cv_mean_linear": 0.9957,
+ "cv_mean_gb": 0.9951,
+ "n_folds": 10,
+ "n_seeds": 5,
+ "n_probes": 5,
+ "level": 2,
+ "year": 2026
+}

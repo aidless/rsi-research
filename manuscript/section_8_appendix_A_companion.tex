@@ -1,0 +1,127 @@
+% Section 8 — Appendix B: Companion Material (paper-grade formatted LaTeX)
+
+\section*{Appendix B: Companion Material --- Agent OS V8 Resource Contracts and Red-Team Harness}
+\addcontentsline{toc}{section}{Appendix B: Companion Material}
+
+This appendix instantiates the architectural recommendations R1--R4 from \S5 inside the broader framework of the Agent OS Reference Architecture (V1--V7 released, V8 in preparation). The two companion deliverables---Resource Contracts (\S B.1) and Adversarial Red-Team Harness (\S B.2)---provide concrete specifications that any bi-level RSI deployment can adopt verbatim. Both are documented in detail at the project repository~\cite{anon2026bi} and the Agent OS specification~\cite{anon2026aosv8}.
+
+\subsection{Resource Contracts (RC)}
+
+The Agent OS V1--V7 specification enumerates nine layers (PDP, PEP, PAP, Audit, Policy-Rego, Multi-PDP, Sidecar, Meta-Audit, Sandbox) at the conceptual level. Each layer's intent is described in prose but no binding contract is published, leaving implementers to re-derive the contract from documentation. The result is documented misimplementations in deployed systems, including AIDE\textsuperscript{2}'s buggy L3 reward-hacking defense and its eval-repair monkey patch.
+
+The V8 \S11 Resource Contracts (RC) abstraction binds each layer to a four-field specification: preconditions, postconditions, resource bounds, and audit-guarantee invariants. Implementing these RCs in production CI/CD pipelines could help close the contract gap, but that deployment effect has not been experimentally validated here.
+
+Below we reproduce the concrete RC\_PEP, RC\_PAP, and RC\_Audit\_Log specifications from V8 \S11.5:
+
+\begin{verbatim}
+RC_PEP(enforce_call, request) {
+    preconditions:  registered in PEP manifest
+    postconditions: deterministic allow/deny
+    resource_bound: latency <= 10 ms (p99)
+    audit_guarantee: decision logged with input hash
+}
+
+RC_PAP(policy_author, version_bump) {
+    preconditions:  write capability in policy_admin role
+    postconditions: policy_dsl validates; signed commit
+    resource_bound: commit overhead <= 1 KB per op
+    audit_guarantee: every commit hash-chained to alpha
+}
+
+RC_Audit_Log(append_entry) {
+    preconditions:  carries (timestamp, source_id, payload, prev_hash)
+    postconditions: hash-chained; integrity verifiable
+    resource_bound: append latency <= 5 ms (p99)
+                    throughput >= 10K entries per sec
+    audit_guarantee: tamper-detection via hash mismatch
+}
+\end{verbatim}
+
+The full RC specification for the nine V1--V7 layers is in V8 \S11.5. Verification follows a three-stage pipeline (static analysis, runtime fuzzing, audit replay) detailed in V8 \S11.6. Failure modes are catalogued in V8 \S11.7.
+
+\subsection{Adversarial Red-Team Harness}
+
+The red-team harness (V8 \S14) operationalizes the threat model of V1--V7's 25 enumerated vulnerabilities into five concrete drop-in probes, derived directly from audit findings on AIDE\textsuperscript{2}:
+
+\begin{itemize}
+    \item \texttt{red\_team\_probe(1)} --- Eval-Reviewer Bypass Test
+    \item \texttt{red\_team\_probe(2)} --- Eval-Repair Drift Detection
+    \item \texttt{red\_team\_probe(3)} --- Path-Injection Surface Scan
+    \item \texttt{red\_team\_probe(4)} --- $\mu\_{\text{priv}}$ Predictability Test (i.e., P2 from \S3)
+    \item \texttt{red\_team\_probe(5)} --- Audit-Channel Read Isolation
+\end{itemize}
+
+We reproduce \texttt{red\_team\_probe(4)} below as an example of the harness's scope. The full set is in V8 \S14.2.
+
+\begin{verbatim}
+def red_team_probe_4(training_data, meta_predictor_fn) -> dict:
+    """Returns AUC of meta-predictor; AUC > 0.7 = probe FAIL."""
+    train, test = train_test_split(training_data)
+    meta_predictor_fn.fit(train)
+    preds = meta_predictor_fn.predict(test["public_history"])
+    auc = compute_auc(test["private_score"], preds)
+    return {"auc": auc, "vulnerable": auc > 0.7}
+\end{verbatim}
+
+The harness is deployed at every outer-loop step (V8 \S14.3), wired into CI/CD pipelines (V8 \S14.6), and scheduled for continuous auditing (V8 \S14.7). V8 \S14.5 provides a coverage matrix of V1--V7's 25 vulnerabilities against the five probes: 11 vulnerabilities have full coverage, 4 have partial coverage, 0 have zero coverage.
+
+\subsection{Threat Model Coverage Matrix}
+
+\begin{table}[h]
+\centering
+\caption{V1--V7 vulnerabilities vs.\ V8 \S14 probes. ``F'' = full coverage, ``P'' = partial coverage, ``--'' = no probe currently covers.}
+\label{tab:threat-coverage}
+\begin{tabular}{lll}
+\toprule
+V1--V7 Vulnerability & Plane & Coverage \\
+\midrule
+\#1 Prompt injection & Cognition & (5) \texttt{P} \\
+\#3 Sandbox escape & Capability & (3) \texttt{F} \\
+\#5 Multi-tenant leakage & Data & (5) \texttt{P} \\
+\#7 LLM audit hallucination contagion & Cognition & (1) \texttt{F} \\
+\#13 PDP poisoning & Control Plane & (2) \texttt{F} \\
+\#15 Control Plane single-point combo & Control Plane & (1)+(2)+(3)+(4)+(5) \texttt{F} \\
+\#17 Local PDP cache poisoning & Control Plane & (2) \texttt{F} \\
+\#19 5-class evolution feedback & Cognition & (4) \texttt{F} \\
+\#21 Sidecar auth bypass & Control Plane & (3) \texttt{P} \\
+\#25 Audit Trail log inflation & Data & (5) \texttt{F} \\
+(AIDE\textsuperscript{2} audit) \texttt{sys.path.append} & Capability & (3) \texttt{F} \\
+(AIDE\textsuperscript{2} audit) Reviewer LLM non-float & Cognition & (1) \texttt{F} \\
+(AIDE\textsuperscript{2} audit) Eval-script monkey-patch & Control Plane & (2) \texttt{F} \\
+(AIDE\textsuperscript{2} audit) 12 one-liners lossy & Capability & RC\_context\_compress \texttt{P} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{AIDE\textsuperscript{2} Specific Mapping}
+
+V8 \S14.8 closes with a direct mapping from AIDE\textsuperscript{2}'s reported issues to the corresponding probes and RCs. We summarize here:
+
+\begin{itemize}
+    \item \textbf{Plain dead code} --- V8 \S14.6 should add \texttt{red\_team\_probe(6)} for complexity bounds (future work).
+    \item \textbf{Complexity blow-up} --- same as above.
+    \item \textbf{Reward-hacking reduction} --- \texttt{red\_team\_probe(4)} (V8 \S14.5) confirms the P3 prediction empirically (see \S4.5 of the main text).
+    \item \textbf{Eval Repair monkey patch} --- \texttt{red\_team\_probe(2)} (V8 \S14.5) detects via hash-chain commit; V8 \S11.5 RC\_Audit\_Log mandates this.
+    \item \textbf{Statistical layer buggy} --- \texttt{red\_team\_probe(5)} (V8 \S14.5) would have detected via hard-coded guard verification at write-time.
+\end{itemize}
+
+\subsection{Status and Roadmap}
+
+\begin{itemize}
+    \item V8 \S11 (Resource Contracts): drafted, target publication as V8 preprint within 1--2 months.
+    \item V8 \S14 (Adversarial Red-Team Harness): drafted, with a reference Python implementation in the project repository~\cite{anon2026bi}.
+    \item V8 \S12 (Trust-Privacy Boundary): scoped, draft to be written (target: 1000 words).
+    \item V8 \S13 (Governance Bootstrapping): scoped, applies only to multi-PDP marketplaces (out-of-scope for bi-level RSI).
+\end{itemize}
+
+\subsection{Adoption Notes for Weco AI (and Similar Implementers)}
+
+We close this appendix with practical notes for implementers:
+
+\begin{enumerate}
+    \item \textbf{Pick R1 first.} Among R1--R4, the highest signal-to-effort ratio is R1 (cryptographic commitment to $\mu\_{\text{priv}}$) because its implementation is mechanical (hash chain) and its detection surface is broad (anything touching $\mu\_{\text{priv}}$).
+    \item \textbf{Add the red-team harness before shipping.} V8 \S14's probes should be run as CI/CD gates; merging a code change that breaks a probe should be blocked.
+    \item \textbf{Publish the RC manifest.} V8 \S11.5's RCs are implementation-agnostic; publishing a layer's RC enables third-party auditors to verify compliance without source code access.
+    \item \textbf{Pair RC verification with audit log replay.} Three-stage verification (V8 \S11.6) is robust only when combined with periodic audit log replay (V8 \S14.7); both are necessary, neither is sufficient.
+    \item \textbf{Treat the harness as a living artifact.} New vulnerabilities discovered through red-team engagement should be added to V8 \S14 with corresponding probes. V8 \S14.8's mapping to AIDE\textsuperscript{2} is a starting point, not a final state.
+\end{enumerate}

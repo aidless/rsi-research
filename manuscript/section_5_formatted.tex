@@ -1,0 +1,32 @@
+% Section 5 -- Architectural Recommendations
+
+We propose four architectural improvements that any bi-level RSI system --- AIDE\textsuperscript{2} included --- could adopt incrementally to close the audit-channel gap. None requires abandoning the existing inner-loop / outer-loop structure; each adds one missing property to the audit channel $\alpha$.
+
+\subsection{R1: Cryptographic Commitment to $\mu_{\text{priv}}$}
+
+At system initialization, compute and publish a hash $H(\mu_{\text{priv}})$ that binds the private-score function as implemented. Any change to $\mu_{\text{priv}}$ that affects computed scores is detectable by hash mismatch. This solves the ``eval repair monkey patch'' class of issues: a rewrite that silently alters the evaluation pipeline cannot pass without an external reviewer noticing the drift. Implementable as a \texttt{subprocess.run(['sha256sum', eval\_pipeline\_path])} step at outer-loop retention; expected overhead $\approx$10 ms per step, negligible vs.\ evaluation budget. (Deployment specifics deferred to Appendix C.)
+
+\subsection{R2: Multi-PDP Voting on Rewrite Acceptance}
+
+A single outer-loop decision rule is a single point of policy tampering: if $\Omega$ rewrites itself, it can vote to retain its own rewrites. Replace the single retention threshold with a small panel of independent PDP instances --- for example, the current $\Omega$ plus two frozen prior versions plus a cryptographic policy commit to a baseline. Retention requires a majority. This pattern is borrowed directly from enterprise access control (Cedar/Rego sidecar-PDP architecture) and has known failure modes that are well-understood.
+
+\subsection{R3: $\Omega$ Access-Audit Logging}
+
+Every read of $\alpha$ by $\Omega$ is logged with the capability justification: which audit-policy rule authorized the read, what scope of $\alpha$ was opened, what was returned. This makes the ``outer loop reads its own audit trail'' pattern detectable and reviewable. Storage cost is bounded by audit-policy granularity (typically $\mathcal{O}(\text{rewrite attempts})$ per outer-loop step). (Full implementation sketches in Appendix C.)
+
+\subsection{R4: TEE-Mediated Channel Separation}
+
+Where the cost is bearable, run $\mu_{\text{priv}}$ computation inside a Trusted Execution Environment (TEE) such that the inner-loop agent cannot observe private scores even via observation side-channels. Even if the LLM context allows prompt injection, the TEE attestation ensures the inner loop's prompt history does not contain leaked private-score signals. Cloud offerings (AWS Nitro Enclaves, GCP Confidential VMs) make this deployable today; quantitative cost-overhead details are in Appendix C.
+
+The four recommendations are layered: R1 is the cheapest and most impactful; R2 prevents policy-tampering classes; R3 makes R1 and R2 auditable in retrospect; R4 raises the bar for future prompt-injection attacks. We do not claim any subset is sufficient; we claim each addresses a documented gap in current systems.
+
+\subsection{Generalization Beyond AIDE\textsuperscript{2}}
+
+The same architectural gap applies to a broader class of bi-level RSI systems, each of which could benefit from the framework. We highlight three:
+\begin{itemize}
+    \item \textbf{AutoML-Zero (Real et al. 2020)} performs evolutionary search in the space of ML algorithms. Its single-level architecture has no private-score channel; adding one (e.g., privately held-out validation set) would make the outer search pressure verifiable. Frame: instantiate Bi-Level PEPA where $\Lambda$ is a candidate ML pipeline and $\Omega$ is the evolutionary mutator, then apply R1--R4.
+    \item \textbf{RL-based prompt search with private evaluation.} Current practice in prompt engineering uses held-out tests in ad-hoc ways --- the prompt that achieves 95\% on visible tests may fail catastrophically on held-out. A private-score mechanism based on Weco's SpecBench pattern, with cryptographic commitment and audit logging, would convert this from folklore to a verifiable engineering discipline.
+    \item \textbf{AI R\&D loop closure in industry.} Any continuous-improvement pipeline in industry AI labs (model release cycles, eval suite iteration, safety-tool improvement) is a degenerate bi-level RSI in which the ``outer loop'' is human-driven. Our framework supplies vocabulary for reasoning about auditability in such pipelines; R1--R4 transfer directly. This is also where Agent OS V8 \S11 (Resource Contracts) and \S14 (Red-Team Harness) supply concrete instantiations: see Appendix B for cross-reference.
+\end{itemize}
+
+We emphasize that this section is \textbf{architectural intent}, not validated implementation. Closing the audit-channel gap in any real bi-level RSI system requires empirical work we do not perform here; the framework's value at this stage is making the requirements explicit.

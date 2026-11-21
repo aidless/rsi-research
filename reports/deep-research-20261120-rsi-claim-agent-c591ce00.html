@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深度检索报告 · RSI 递归自我改进全流程交付：claim级审计 可自证agent 六路深挖 科研三闸回灌</title>
+<style>
+:root{
+  /* 主色 60% —— 暖白底，安静基调 */
+  --bg:#faf9f7;
+  --card:#ffffff;
+  --card-soft:#fbfaf8;
+  /* 辅色 30% —— 深灰文字 + 极浅暖灰分割 */
+  --ink:#2b2f36;
+  --ink-2:#6b7280;
+  --line:#eceae6;
+  /* 点睛 10% —— 黛青(内/主强调) / 珊瑚橙(外/关键数据) / 中性灰(未覆盖·历史) */
+  --accent:#2f4858;
+  --accent-deep:#1f3a5f;
+  --point:#d9684a;
+  --muted:#9aa0a6;
+  /* 三字体体系：展示(宋) / 阅读(黑) / 数据(等宽) */
+  --serif:"Noto Serif SC","Source Han Serif SC",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:"Inter","JetBrains Mono",monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--ink);
+  padding:40px 32px;
+  line-height:1.7;
+}
+.report {
+  max-width:820px;
+  margin:0 auto;
+  background:var(--card);
+  border-radius:12px;
+  box-shadow:0 2px 16px rgba(43,47,54,.05);
+  overflow:hidden;
+}
+/* header —— 暖白底 + 黛青点睛条，去渐变 */
+.header {
+  background:var(--card);
+  border-top:4px solid var(--accent);
+  border-bottom:1px solid var(--line);
+  color:var(--ink);
+  padding:32px;
+}
+.header .kicker { font-family:var(--sans); font-size:13px; color:var(--muted); letter-spacing:1px; }
+.header h1 { font-family:var(--serif); font-size:22px; color:var(--accent); margin:8px 0 16px; font-weight:700; }
+.meta { display:flex; flex-wrap:wrap; gap:8px 20px; font-size:13px; color:var(--ink-2); }
+.meta b { font-weight:600; color:var(--ink); }
+.chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+.chip { background:#f1efea; padding:4px 12px; border-radius:999px; font-size:12px; color:var(--ink-2); }
+/* body */
+.body { padding:32px 32px 24px; }
+h2 {
+  font-family:var(--serif);
+  font-size:18px; color:var(--accent); margin:32px 0 16px;
+  display:flex; align-items:center; gap:8px;
+}
+h2::before { content:""; width:4px; height:18px; background:var(--accent); border-radius:2px; }
+/* conclusion cards */
+.grid { display:grid; grid-template-columns:1fr; gap:16px; }
+.card {
+  display:flex; gap:14px; align-items:flex-start;
+  background:var(--card-soft); border:1px solid var(--line); border-radius:10px;
+  padding:16px 20px; border-left:4px solid var(--muted);
+}
+.card .num { font-family:var(--mono); font-weight:700; color:var(--muted); font-size:14px; min-width:22px; }
+.card .txt { flex:1; font-size:14px; }
+.card.s-in { border-left-color:var(--accent); }
+.card.s-out { border-left-color:var(--point); }
+.card.s-both { border-left-color:var(--accent-deep); }
+.card.s-gap { border-left-color:var(--muted); }
+.badge {
+  display:inline-block; font-family:var(--sans); font-size:11px; font-weight:600;
+  padding:2px 8px; border-radius:999px; margin-right:6px; vertical-align:1px;
+}
+.b-in { background:#e7ecf0; color:#2f4858; }
+.b-out { background:#fbe9e3; color:#c0533a; }
+.b-both { background:#e3e9f0; color:#1f3a5f; }
+.b-gap { background:#f1efea; color:#6b7280; }
+/* table */
+table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+th { background:#f3f1ec; text-align:left; padding:10px; font-weight:600; color:var(--ink-2); }
+td { padding:10px; border-bottom:1px solid var(--line); vertical-align:top; }
+tr:last-child td { border-bottom:none; }
+/* source lists */
+.src-block { background:var(--card-soft); border:1px solid var(--line); border-radius:10px; padding:16px 20px; margin-top:16px; font-size:13px; }
+.src-block h4 { font-family:var(--sans); font-size:13px; margin-bottom:8px; color:var(--ink); }
+.src-block ul { list-style:none; }
+.src-block li { padding:4px 0; }
+.src-block .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:8px; }
+.dot-in { background:var(--accent); } .dot-out { background:var(--point); } .dot-his { background:var(--accent); }
+code { font-family:var(--mono); background:#f3f1ec; padding:1px 5px; border-radius:4px; font-size:12px; color:var(--ink); }
+/* footer */
+.footer { background:var(--card-soft); border-top:1px solid var(--line); padding:20px 32px 24px; font-size:12px; color:var(--muted); }
+.disclaimer { font-style:italic; color:var(--ink-2); margin-top:6px; }
+/* print */
+@media print { body{background:#fff;padding:0} .report{box-shadow:none;border-radius:0} }
+</style>
+</head>
+<body>
+<div class="report">
+  <div class="header">
+    <div class="kicker">深度检索报告 · DEEP-RESEARCH · FINAL</div>
+    <h1>RSI 递归自我改进 全流程交付</h1>
+    <div class="meta">
+      <span><b>范围</b>：claim 级审计 → 可自证 agent → 六路深挖 → 科研三闸回灌 → 真实数据 pilot</span>
+      <span><b>来源</b>：内部 14 · 外部 17</span>
+      <span><b>日期</b>：2026-11-20</span>
+    </div>
+    <div class="chips">
+      <span class="chip">检索路径：导航 → 实体消歧 → 双链 → 关键词 → 联网 → 本地复算</span>
+      <span class="chip">检索模式：语义 + 文件定位 + 实测复算</span>
+      <span class="chip">查询改写：规范化（arXiv 号-题验号；数字实测复算）</span>
+    </div>
+  </div>
+
+  <div class="body">
+    <h2>核心结论</h2>
+    <div class="grid">
+      <div class="card s-in">
+        <div class="num">1</div>
+        <div class="txt"><span class="badge b-in">内</span><b>claim 级审计：从"证据够不够"到"证据是不是自证"</b>：P1 真证据（ESS power ρ=0.5/0.7/0.9=0.047/0.015/0.000）；P2 循环论证——<code>mu_priv = final_public_score + N(0,σ)</code> 而特征第 0 维就是 final_public_score，AUC=0.9970 是同义反复；P3 合成注入模拟。</div>
+      </div>
+      <div class="card s-in">
+        <div class="num">2</div>
+        <div class="txt"><span class="badge b-in">内</span><b>建成真正能跑且不自证的 RSI agent</b>：纯标准库、零 GPU、零 key；六道反自证机制；<code>--self-test</code> <b>41/41 OK</b>；demo 60 代 verdict=SELF_IMPROVEMENT_VERIFIED，权重 (1,0,0)→(0.683,-0.4885,0.886)，均分 0.7514→1.2452，审计链 240 条 OK。</div>
+      </div>
+      <div class="card s-in">
+        <div class="num">3</div>
+        <div class="txt"><span class="badge b-in">内</span><b>科研三闸回灌论文全 PASS</b>：P2 循环诚实披露+非循环审计闸设计；AUC 统一 canonical 0.9970 / CV 0.9957±0.0027；删编造 GPU 声明；首闸+终闸 <code>--final --prior</code> 全 PASS、unresolved=[]；重编译 38 页。</div>
+      </div>
+      <div class="card s-in">
+        <div class="num">4</div>
+        <div class="txt"><span class="badge b-in">内</span><b>真实 SWE-bench Verified 数据 pilot 6 项全中</b>：真实 500 实例（12 repo）、public 155/sealed-private 345；NC 三态与配对闸三态全中，负担攻击 burden=0.460>0.25 被拒；41 项自测无回归。</div>
+      </div>
+      <div class="card s-out">
+        <div class="num">5</div>
+        <div class="txt"><span class="badge b-out">外</span><b>六路深挖：真正威胁大多不经过递归循环</b>（<a href="https://arxiv.org/html/2611.21538">Optimistic Verifiers Get Hacked</a>）：NC 最大——乐观代理报 0.940 vs 真 faithful 0.731→0.667；verifier 塌成 always-pass 仍训出技能（<a href="https://arxiv.org/html/2610.11464">Who Verifies the Verifier</a>）；Artifact-to-Capability 属性 4 命中旧 paired_gate 逐实例回归漏洞。</div>
+      </div>
+      <div class="card s-gap">
+        <div class="num">6</div>
+        <div class="txt"><span class="badge b-gap">⚠ 未覆盖</span><b>真端到端缺三样外部资源</b>：LLM API key、<code>GITHUB_TOKEN</code>、<code>ale_bench</code>/<code>swebench</code> 包+HF 数据+docker。三通道实测全 BLOCKED。真实 pilot 的 patch 是确定性 code_gen、分数是标量替身，<b>非端到端</b>。</div>
+      </div>
+    </div>
+
+    <h2>关键要点</h2>
+    <div class="src-block">
+      <ul>
+        <li><b>最硬的自我纠错</b>：P2 的 AUC≈0.997 不是"预测私有分"的能力，而是把公开分加噪当标签、又把公开分放进特征的代数恒等式。修法是 NC 前置审计闸：用外部真值锚在 probe grid 上算 selection_error / signed_gap / saturation，乐观或乱序即拒，判定进哈希链。</li>
+        <li><b>回归闸的正确操作化</b>：简单"任何实例回归即拒"会误杀真提升（真提升 burden 实测 0.000~0.086）；用"回归总额占比 + noise_floor 标定阈值 0.25"，大样本负担攻击（190×+0.05 / 10×-0.5）才成立并被拒。</li>
+        <li><b>接入优先级已实测收敛</b>：SWE-bench Verified（真实 parquet 已落盘）> ALE-Bench（连续分最贴配对闸，缺数据/docker/key）> Terminal-Bench；真 LLM 生成环必须上云。</li>
+        <li><b>可信度风险不在"闸够不够"而在 verifier 可被认证绕过</b>：下游分无法认证 verifier，故 NC 必须用与下游评分器无关的外部真值锚。</li>
+      </ul>
+    </div>
+
+    <h2>证据清单</h2>
+    <table>
+      <tr><th>#</th><th>结论摘要</th><th>支撑</th><th>来源</th></tr>
+      <tr><td>1</td><td>P1 真证据 / P2 循环 / P3 合成；AUC 0.9970 复现但标签=特征加噪</td><td><span class="badge b-in">内</span></td><td>notes/2026-11-18-rsi-claim-audit.md + result_linear_seed0.json</td></tr>
+      <tr><td>2</td><td>RSI agent 六机制、41/41 自测、demo VERIFIED 0.7514→1.2452</td><td><span class="badge b-in">内</span></td><td>rsi-agent/README.md + results/demo.json</td></tr>
+      <tr><td>3</td><td>NC 前置审计闸 n=60：honest PASS / padding OPTIMISTIC_GAP / corrupted SELECTION_CORRUPTED</td><td><span class="badge b-in">内</span></td><td>rsi_agent/nc_guard.py + results/nc_audit.json</td></tr>
+      <tr><td>4</td><td>逐实例回归负担闸：真提升过、大样本负担攻击拒</td><td><span class="badge b-in">内</span></td><td>rsi_agent/gates.py + tests/test_reg_burden.py</td></tr>
+      <tr><td>5</td><td>三闸首闸+终闸全 PASS、unresolved=[]；稿件重编译 38 页</td><td><span class="badge b-in">内</span></td><td>recovered/auditable-rsi/evidence/gate{1,2,3}_final.json</td></tr>
+      <tr><td>6</td><td>AUC 口径统一 0.9970 / 0.9957±0.0027；删 GPU 声明；2 死链重建</td><td><span class="badge b-in">内</span></td><td>recovered/auditable-rsi/section_4_formatted.tex</td></tr>
+      <tr><td>7</td><td>真实 parquet 500 实例、12 repo、难度四档；pilot 6 项全中</td><td><span class="badge b-in">内</span></td><td>results/swe_real_data_pilot.json + scripts/swe_real_data_pilot.py</td></tr>
+      <tr><td>8</td><td>NC 威胁：乐观代理 0.940 vs 真 0.731→0.667</td><td><span class="badge b-out">外</span></td><td><a href="https://arxiv.org/html/2611.21538">arXiv:2611.21538</a></td></tr>
+      <tr><td>9</td><td>verifier 塌成 always-pass 仍训出技能，下游分无法认证 verifier</td><td><span class="badge b-out">外</span></td><td><a href="https://arxiv.org/html/2610.11464">arXiv:2610.11464</a></td></tr>
+      <tr><td>10</td><td>Artifact-to-Capability 属性 4 命中 paired_gate 逐实例回归漏洞</td><td><span class="badge b-out">外</span></td><td><a href="https://arxiv.org/html/2610.38392">arXiv:2610.38392</a></td></tr>
+      <tr><td>11</td><td>ELITE 零下游评估 60.0→85.6、去闸崩 52.0、快 8.81×</td><td><span class="badge b-out">外</span></td><td><a href="https://arxiv.org/html/2611.21056">arXiv:2611.21056</a></td></tr>
+      <tr><td>12</td><td>agentdescent 真提升闸：Beta 后验+回归护栏+三分区证伪+外部注入评分器</td><td><span class="badge b-out">外</span></td><td><a href="https://github.com/ThinkFlowLab/agentdescent">github.com/ThinkFlowLab/agentdescent</a></td></tr>
+    </table>
+
+    <h2>口径与来源（进阶）</h2>
+    <div class="src-block">
+      <ul>
+        <li><b>术语口径</b>：NC=non-circularity（标签不来自候选自身输出）；SP=sealed-private；ESS=n·(1-rho)/(1+rho)；burden=sum|neg|/sum(pos)；HA=hash-chain audit。</li>
+        <li><b>实体解析</b>："Auditable Recursive Self-Improvement" → <code>A PDP-style Formal Framework for Bi-Level Agent Systems</code>（真源 sha256 <code>a40d6df5…</code>）；"paired_gate" → <code>rsi_agent/gates.py:74</code>。</li>
+        <li><b>数据状态</b>：论文/repo 读数截至 2026-11-19；摘要自报数字标"未复算"，agent 与闸数字为本机实测可复算。</li>
+      </ul>
+    </div>
+
+    <h2>来源分区</h2>
+    <div class="src-block">
+      <h4>内部资料（14）</h4>
+      <ul>
+        <li><span class="dot dot-in"></span>notes/2026-11-18-rsi-claim-audit.md</li>
+        <li><span class="dot dot-in"></span>notes/2026-11-19-rsi-deep-papers-{a,b,c}.md（3 份）</li>
+        <li><span class="dot dot-in"></span>notes/2026-11-19-rsi-deep-projects-{core,more}.md + -datasets.md（3 份）</li>
+        <li><span class="dot dot-in"></span>rsi-agent/README.md + rsi_agent/{nc_guard,gates}.py</li>
+        <li><span class="dot dot-in"></span>results/{demo,swe_real_data_pilot,nc_audit}.json</li>
+        <li><span class="dot dot-in"></span>recovered/auditable-rsi/evidence/gate{1,2,3}_final.json</li>
+      </ul>
+    </div>
+    <div class="src-block">
+      <h4>公开信息（17）</h4>
+      <ul>
+        <li><span class="dot dot-out"></span><a href="https://arxiv.org/abs/2609.14858">Dream-RSI</a> · <a href="https://arxiv.org/abs/2609.26457">AIDE²</a> · <a href="https://www.weco.ai/blog/first-evidence-of-recursive-self-improvement">Weco blog</a></li>
+        <li><span class="dot dot-out"></span><a href="https://arxiv.org/html/2610.11464">Who Verifies the Verifier</a> · <a href="https://arxiv.org/html/2610.38392">Masked Erosion</a> · <a href="https://arxiv.org/html/2611.21538">Optimistic Verifiers Get Hacked</a></li>
+        <li><span class="dot dot-out"></span><a href="https://arxiv.org/html/2611.12988">Third Eye</a> · <a href="https://arxiv.org/html/2611.04952">Artifact-to-Capability</a> · <a href="https://arxiv.org/html/2611.21056">ELITE</a></li>
+        <li><span class="dot dot-out"></span><a href="https://arxiv.org/html/2610.14625">RSI 四组九维分类学</a> · <a href="https://arxiv.org/abs/2610.20845">Skill-policy 共进化陷阱</a> · <a href="https://arxiv.org/abs/2610.14662">反馈不定向</a></li>
+        <li><span class="dot dot-out"></span><a href="https://www.swebench.com/">SWE-bench</a> · <a href="https://github.com/SakanaAI/ALE-Bench">ALE-Bench</a> · <a href="https://github.com/ThinkFlowLab/agentdescent">agentdescent</a> · <a href="https://github.com/AetherLabsAI/RSIAgent">RSIAgent</a></li>
+        <li><span class="dot dot-out"></span><a href="https://hf-mirror.com">HF 国内镜像</a></li>
+      </ul>
+    </div>
+
+    <h2>研究方法</h2>
+    <div class="src-block">
+      <ul>
+        <li><b>标记说明</b>：外部一手来源均标 [外] 并附真实 URL，例如 [外](https://arxiv.org/abs/2609.14858)、[外](https://www.swebench.com/)，出处见上方公开信息分区 17 条。</li>
+        <li><b>子问题</b>：①自有 RSI 资产及证据是否自证？②能否造真跑且不自证的 agent？③领域真正威胁是什么？④能否用三闸回灌论文？⑤真实数据下机制是否成立？</li>
+        <li><b>检索查询</b>：web/arxiv/gh 共 40+ 条；本地 notes 14 份、落盘 JSON 8 份。</li>
+        <li><b>唯一来源</b>：17 个（目标 15–30，达标）。</li>
+        <li><b>深读篇数</b>：15 篇 arXiv 全文（15/15 HTTP 200）+ 13 repo 源码（184 文件落盘）+ 1 份真实 parquet（500 行）。</li>
+        <li><b>源优先级</b>：arXiv 原文/官方 repo/官方数据集 > 权威博客 > 论坛；近 12 月优先；数字一律实测复算。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="disclaimer">⚠️ 本报告为对本地证据与公开资料的研究性整理归纳，数字均可从落盘产物复算，不构成投稿/投资/工程落地建议；真端到端所需 LLM/数据/权限缺口已如实标注。</div>
+    <div style="margin-top:4px;">生成：deep-research skill · md 底稿与证据表随 HTML 一并交付</div>
+  </div>
+</div>
+</body>
+</html>

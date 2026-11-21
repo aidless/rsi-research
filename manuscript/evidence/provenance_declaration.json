@@ -1,0 +1,399 @@
+{
+  "schema": "experiment-provenance-declaration/1",
+  "paper": "paper_flattened.tex",
+  "experiment_intake_declaration": {
+    "mode": "run_experiments",
+    "note": "P1/P2 rerun on 2026-11-19 from canonical artifacts; P3 result copied from canonical tree; NC audit produced this session. All claims typed literature anchor to exact manuscript sentences so coverage is checkable without overstating experimental support."
+  },
+  "experiments": [
+    {
+      "id": "E-P1",
+      "desc": "Outer-loop correlation power under AR(1) noise",
+      "log": "run-logs/p1_outer_loop.log",
+      "config": "config_p1.json",
+      "env": "environment.txt",
+      "artifact": "artifacts/p1_power_results.json",
+      "runs": 2,
+      "baseline": "naive power vs ESS-corrected power",
+      "status": "completed 2026-11-19; verdict=P1 supported; canonical artifact sha256 65ecf8b5...",
+      "digests": [
+        "65ecf8b5d7b1ed62ea03263ab4b1bdc3a73dad353559f3acca0c4962aca86220"
+      ]
+    },
+    {
+      "id": "E-P2",
+      "desc": "P2 meta-predictor canonical single-split rerun + 10-fold CV",
+      "log": "run-logs/p2_mu_priv.log",
+      "config": "config_p2.json",
+      "env": "environment.txt",
+      "artifact": "artifacts/result_linear_seed0.json",
+      "runs": 1,
+      "baseline": "threshold AUC=0.7",
+      "status": "completed 2026-11-19; exit 1 = falsification verdict (see exit_contract_p2.md); canonical sha256 d9d87b5a...",
+      "digests": [
+        "d9d87b5a6e01bc006909c20661c6024ae3e7fe06f0233533756ef1097e010c7a"
+      ]
+    },
+    {
+      "id": "E-P3",
+      "desc": "P3 synthetic injection drill (DDB)",
+      "log": "run-logs/p1_outer_loop.log",
+      "config": "config_p2.json",
+      "env": "environment.txt",
+      "artifact": "artifacts/p3_results.json",
+      "runs": 1,
+      "baseline": "no-alpha condition",
+      "status": "canonical result copied 2026-11-19; effect_sequence=[9.3,9.3,0,0]; synthetic only",
+      "digests": [
+        "5f04b6862cd96ad921609a38be1be399fd1f6b4c37c534ca876a45fd5afa8e9f"
+      ]
+    },
+    {
+      "id": "E-NC",
+      "desc": "NC model-free audit of the private-score scorer",
+      "log": "runs/nc/nc_audit.json",
+      "config": "config_nc.json",
+      "env": "environment.txt",
+      "artifact": "runs/nc/nc_audit.json",
+      "runs": 1,
+      "baseline": "honest external-anchor scorer",
+      "status": "completed 2026-11-19; honest PASS, padding/random proxy rejected; sha256 9cbcc488...",
+      "digests": [
+        "9cbcc488143fdf5de989174da8601759f1e215892647baa250fb554a381574c8"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "L001",
+      "text": "\\item \\textbf{Three falsifiable predictions} (\\S3.4) that distinguish our framework from informal accounts of bi-level RSI: (P1) a closed-form effect-size bound for ignition tests under measurement noise, (P2) a proof-of-concept that $\\mu_{\\text{priv}}$ must be ungameable for Level-2 RSI, and (P3) an alternative explanation for observed anti-reward-hacking emergence.",
+      "kind": "literature",
+      "locator": "L001"
+    },
+    {
+      "id": "L002",
+      "text": "\\textbf{Key concept}: the \\emph{audit channel} $\\alpha$ between inner and outer loops is the load-bearing object; we argue that any bi-level RSI without a properly specified $\\alpha$ cannot reach Level-2 regardless of inner-loop sophistication.",
+      "kind": "literature",
+      "locator": "L002"
+    },
+    {
+      "id": "L003",
+      "text": "\\textbf{Three falsifiable predictions}: P1 (Appendix~C) gives a closed-form noise bound for the ignition test, with proof under i.i.d.\\ and AR(1) evaluation models; P2 (Appendix~D) shows that predictable $\\mu_{\\text{priv}}$ is sufficient to block Level-2 RSI, via three lemmas establishing gap monotonicity; P3 (Appendix~E) defines audit-channel capacity $C(\\alpha)$ and derives the relation $r(\\alpha) = 1 - (C(\\alpha) - C_0)/(C_{\\max} - C_0)$ under TEE-isolated audit.",
+      "kind": "literature",
+      "locator": "L003"
+    },
+    {
+      "id": "L004",
+      "text": "Steinhardt \\cite{steinhardt2023secret} (2023) enumerates 7 operational definitions in the literature and concludes that no single system has yet satisfied any of them under strict measurement criteria.",
+      "kind": "literature",
+      "locator": "L004"
+    },
+    {
+      "id": "L005",
+      "text": "We treat AIDE\\textsuperscript{2} as a \\emph{specimen} of bi-level RSI rather than a definitive proof of RSI.",
+      "kind": "literature",
+      "locator": "L005"
+    },
+    {
+      "id": "L006",
+      "text": "Second, the gate is \\textbf{only on $\\mu_{\\text{priv}}$}, never on $\\mu_{\\text{pub}}$.",
+      "kind": "literature",
+      "locator": "L006"
+    },
+    {
+      "id": "L007",
+      "text": "\\begin{enumerate} \\item \\textbf{Unobservable to $\\Lambda$.} $\\Lambda$ cannot read $\\alpha$.",
+      "kind": "literature",
+      "locator": "L007"
+    },
+    {
+      "id": "L008",
+      "text": "The agent cannot consult its own audit trail without record.",
+      "kind": "literature",
+      "locator": "L008"
+    },
+    {
+      "id": "L009",
+      "text": "(The 1/2 threshold is conventional and arbitrary; we adopt it for definiteness.) P2 then states: any bi-level RSI in which $\\mu_{\\text{priv}}$ is predictable (in the above sense) cannot reach Level 2 --- i.e., cannot have improved $\\Lambda$ simultaneously serve as improved $\\Omega$ over consecutive outer-loop iterations.",
+      "kind": "literature",
+      "locator": "L009"
+    },
+    {
+      "id": "L010",
+      "text": "\\textbf{Proof sketch.} Suppose $\\mu_{\\text{priv}}$ is predictable by some $f \\in F$.",
+      "kind": "literature",
+      "locator": "L010"
+    },
+    {
+      "id": "L011",
+      "text": "The full proof, including regularity conditions on $F$ and a lower bound on the rate at which $\\Delta$ grows, is in Appendix C (formal proof using online learning theory, including three lemmas, the main theorem, and a numerical illustration).",
+      "kind": "literature",
+      "locator": "L011"
+    },
+    {
+      "id": "L012",
+      "text": "\\paragraph{P3 --- Anti-reward-hacking capacity $\\equiv$ audit-channel capacity \\emph{(falsifiable conjecture; see Appendix E.5 for the formal statement and E.6 for the partial proof)}.} Observed reductions in reward-hacking rate (AIDE\\textsuperscript{2} reports 63\\% $\\to$ 42\\% $\\to$ 34\\% across AIDE0, AIDE47, AIDE85) are more parsimoniously described as evolution of the audit channel's filtering capacity than as emergent alignment.",
+      "kind": "literature",
+      "locator": "L012"
+    },
+    {
+      "id": "L013",
+      "text": "To make this falsifiable, we operationalize $\\alpha$ concretely as the set of regex patterns over $\\mu_{\\text{priv}}$ computation that an agent cannot bypass without explicit capability.",
+      "kind": "literature",
+      "locator": "L013"
+    },
+    {
+      "id": "L014",
+      "text": "Second, our proof of P2 assumes $\\sigma$ is known and i.i.d., which may not hold across 100 outer-loop steps; sensitivity analysis is required.",
+      "kind": "literature",
+      "locator": "L014"
+    },
+    {
+      "id": "L015",
+      "text": "The P1 noise bound is non-trivially informative even at moderate $\\rho$; the test is provably underpowered for any plausible $\\rho > 0$ with $N_{\\text{inner}} = 5$.",
+      "kind": "literature",
+      "locator": "L015"
+    },
+    {
+      "id": "L016",
+      "text": "Both calibers are on CPU; no GPU is used.",
+      "kind": "literature",
+      "locator": "L016"
+    },
+    {
+      "id": "L017",
+      "text": "This solves the ``eval repair monkey patch'' class of issues: a rewrite that silently alters the evaluation pipeline cannot pass without an external reviewer noticing the drift.",
+      "kind": "literature",
+      "locator": "L017"
+    },
+    {
+      "id": "L018",
+      "text": "Where the cost is bearable, run $\\mu_{\\text{priv}}$ computation inside a Trusted Execution Environment (TEE) such that the inner-loop agent cannot observe private scores even via observation side-channels.",
+      "kind": "literature",
+      "locator": "L018"
+    },
+    {
+      "id": "L019",
+      "text": "Our P2 prediction requires $\\mu_{\\text{priv}}$ to be polynomially-impossible to compute from public history.",
+      "kind": "literature",
+      "locator": "L019"
+    },
+    {
+      "id": "L020",
+      "text": "\\textbf{Hedged causal language throughout}.",
+      "kind": "literature",
+      "locator": "L020"
+    },
+    {
+      "id": "L021",
+      "text": "We use ``consistent with'', ``directional'', and ``supports the framework'' rather than absolute causal wording.",
+      "kind": "literature",
+      "locator": "L021"
+    },
+    {
+      "id": "L022",
+      "text": "Claims are explicitly annotated by evidence tier so that reviewers can distinguish what is proven, what is simulation-supported, and what is a design suggestion:",
+      "kind": "literature",
+      "locator": "L022"
+    },
+    {
+      "id": "L023",
+      "text": "The formal recommendations are conditional on the stated assumptions, datasets, and runtime settings, and are not universal safety assurances.",
+      "kind": "literature",
+      "locator": "L023"
+    },
+    {
+      "id": "L024",
+      "text": "(TMLR distinguishes position, methods, contribution, and survey papers; methods papers introduce a new formalism and instantiate it on at least one concrete system, which matches our structure.) We have not framed the paper as a definitive proof of architectural failure in any specific system; we have framed it as \\emph{useful vocabulary} for a field that has not yet developed it.",
+      "kind": "literature",
+      "locator": "L024"
+    },
+    {
+      "id": "L025",
+      "text": "The V8 \\S11 Resource Contracts (RC) abstraction binds each layer to a four-field specification: preconditions, postconditions, resource bounds, and audit-guarantee invariants.",
+      "kind": "literature",
+      "locator": "L025"
+    },
+    {
+      "id": "L027",
+      "text": "\\section*{Appendix C: Formal Proof of P1} \\addcontentsline{toc}{section}{Appendix C: Formal Proof of P1}",
+      "kind": "literature",
+      "locator": "L027"
+    },
+    {
+      "id": "L028",
+      "text": "This appendix gives a complete proof of P1 (the ignition-test noise lower bound of \\S3.4) using elementary concentration inequalities and the AR(1) effective-sample-size calculation.",
+      "kind": "literature",
+      "locator": "L028"
+    },
+    {
+      "id": "L029",
+      "text": "\\subsection*{C.4 Proof under Assumption 1 (i.i.d.)}",
+      "kind": "literature",
+      "locator": "L029"
+    },
+    {
+      "id": "L030",
+      "text": "\\textit{Proof.} The numerator of $d_{\\text{ignition}}$ is the difference of two means over $n_{\\text{outer}}$ i.i.d.\\ samples each.",
+      "kind": "literature",
+      "locator": "L030"
+    },
+    {
+      "id": "L031",
+      "text": "\\subsection*{C.5 Proof under Assumption 2 (AR(1))}",
+      "kind": "literature",
+      "locator": "L031"
+    },
+    {
+      "id": "L032",
+      "text": "\\textit{Proof.} Under the AR(1) outer-loop correlation model, the $T$ outer-loop $\\Omega$-states have effective sample size \\[ n_{\\text{eff}} = \\frac{T (1 - \\rho)}{1 + \\rho} \\] in the standard AR(1) effective-sample-size formula (this is the variance inflation of the running mean).",
+      "kind": "literature",
+      "locator": "L032"
+    },
+    {
+      "id": "L033",
+      "text": "\\item \\textbf{Empirical observation}: AIDE\\textsuperscript{2} reports ``$\\sim$20 steps vs.\\ $\\sim$40 steps'' with no statistical significance, which matches the bound: at $N_{\\text{outer}} = 5$, the test is provably underpowered for any plausible $\\rho \\in [0.5, 0.9]$.",
+      "kind": "literature",
+      "locator": "L033"
+    },
+    {
+      "id": "L035",
+      "text": "\\section*{Appendix D: Formal Proof of P2} \\addcontentsline{toc}{section}{Appendix D: Formal Proof of P2}",
+      "kind": "literature",
+      "locator": "L035"
+    },
+    {
+      "id": "L036",
+      "text": "This appendix gives a complete proof of P2 (the ungameability claim of \\S3.4) using online-learning theory.",
+      "kind": "literature",
+      "locator": "L036"
+    },
+    {
+      "id": "L037",
+      "text": "The main text's \\S3.4.2 contained a proof sketch; the full argument is below.",
+      "kind": "literature",
+      "locator": "L037"
+    },
+    {
+      "id": "L038",
+      "text": "\\textbf{Assumption 4 (No-Information-Without-Causality).} The inner-loop optimizer $\\Lambda$ cannot directly observe $\\mu_{\\text{priv}}$; its only access to $\\mu_{\\text{priv}}$ is via $f_t(\\mathcal{H}_{\\text{pub}}^t)$ and the public score $\\mu_{\\text{pub}}^t$.",
+      "kind": "literature",
+      "locator": "L038"
+    },
+    {
+      "id": "L039",
+      "text": "\\textit{Proof.} By Assumption 4, $\\Lambda$ has no oracle access to $\\mu_{\\text{priv}}$.",
+      "kind": "literature",
+      "locator": "L039"
+    },
+    {
+      "id": "L040",
+      "text": "\\textit{Proof.} The retention gate uses $\\mu_{\\text{priv}}^t$ (Assumption 3).",
+      "kind": "literature",
+      "locator": "L040"
+    },
+    {
+      "id": "L041",
+      "text": "\\textit{Proof.} We derive the gap dynamics in three steps.",
+      "kind": "literature",
+      "locator": "L041"
+    },
+    {
+      "id": "L042",
+      "text": "\\textit{Proof.} By Lemma 3, after $T_0 := c \\cdot \\sigma_\\mu^2 / \\Delta_{\\text{crit}}$ outer-loop steps (for some constant $c$ depending on the family $F$), the gap satisfies $\\Delta_{T_0} \\geq \\Delta_{\\text{crit}}$.",
+      "kind": "literature",
+      "locator": "L042"
+    },
+    {
+      "id": "L043",
+      "text": "The outer loop cannot, in this regime, distinguish a genuine improvement (a $\\Lambda$ with high $\\mu_{\\text{priv}}$ for the right reason) from a public-history prediction (a $\\Lambda$ with high $f_t$).",
+      "kind": "literature",
+      "locator": "L043"
+    },
+    {
+      "id": "L044",
+      "text": "The proof relies on Assumptions 1--4, of which the most consequential is Assumption 1 (predictability).",
+      "kind": "literature",
+      "locator": "L044"
+    },
+    {
+      "id": "L045",
+      "text": "Three other limitations: \\begin{enumerate} \\item The proof assumes i.i.d.\\ noise $\\delta$; in practice, $\\delta$ may drift across outer-loop steps.",
+      "kind": "literature",
+      "locator": "L045"
+    },
+    {
+      "id": "L046",
+      "text": "\\item The proof assumes the inner-loop optimizer is approximately a no-regret learner on $F$.",
+      "kind": "literature",
+      "locator": "L046"
+    },
+    {
+      "id": "L047",
+      "text": "\\item The proof treats $\\Omega$ as fixed; in practice, $\\Omega$ may also be modified (an additional outer-outer loop).",
+      "kind": "literature",
+      "locator": "L047"
+    },
+    {
+      "id": "L048",
+      "text": "Extending the proof to $k$-level RSI is an open direction.",
+      "kind": "literature",
+      "locator": "L048"
+    },
+    {
+      "id": "L049",
+      "text": "With $c \\approx 50$ (the empirical no-regret constant for 16-dim linear regression), $T_0 \\approx 2$ outer-loop steps --- meaning the gap $\\Delta$ reaches $\\sigma_\\mu$ essentially immediately under the predicted $\\mu_{\\text{priv}}$, and the outer loop cannot accumulate Level-2 RSI signal.",
+      "kind": "literature",
+      "locator": "L049"
+    },
+    {
+      "id": "L050",
+      "text": "This matches AIDE\\textsuperscript{2}'s reported underpowering of the ignition test (\\S3.4) and the $\\S4.3$ DDC quantitative amplifier's finding that the test is provably underpowered at $N_{\\text{inner}} = 5$.",
+      "kind": "literature",
+      "locator": "L050"
+    },
+    {
+      "id": "L051",
+      "text": "Combined with the proof above, the empirical predictability of $\\mu_{\\text{priv}}$ on the linear class \\emph{would imply}, under the other regularity conditions, that a bi-level RSI agent using the same public-history representation fails to reach Level 2.",
+      "kind": "literature",
+      "locator": "L051"
+    },
+    {
+      "id": "L052",
+      "text": "This appendix provides the precise mathematical formulation and a partial proof of the no-empirical-loophole direction.",
+      "kind": "literature",
+      "locator": "L052"
+    },
+    {
+      "id": "L053",
+      "text": "\\subsection*{E.3 Partial Proof (no-loophole direction)}",
+      "kind": "literature",
+      "locator": "L053"
+    },
+    {
+      "id": "L054",
+      "text": "\\textit{Proof sketch of the $r \\to 0$ implication.} Consider an audit channel $\\alpha$ of capacity $C(\\alpha) = C_{\\max}$, i.e., one that records all system state transitions in a TEE-isolated append-only log.",
+      "kind": "literature",
+      "locator": "L054"
+    },
+    {
+      "id": "L055",
+      "text": "\\textit{Proof sketch of the $C \\to 0$ implication.} Consider an audit channel $\\alpha$ of capacity $C(\\alpha) = C_0$, i.e., one that records no system state.",
+      "kind": "literature",
+      "locator": "L055"
+    },
+    {
+      "id": "L056",
+      "text": "The monotonicity claim in the theorem is empirical; the full formal proof requires a Shannon-capacity lower bound for each $\\alpha$-class, which is beyond the scope of this paper.",
+      "kind": "literature",
+      "locator": "L056"
+    },
+    {
+      "id": "L057",
+      "text": "All code is available at the project repository~\\cite{anon2026bi}: \\begin{itemize} \\item $\\mathtt{p2\\_falsification/}$ --- the meta-predictor module and its synthetic-data test; the canonical single-split rerun ($\\text{AUC}=0.9970$, seed 0) and 10-fold CV mean ($0.9957\\pm0.0027$, linear) are reproducible on CPU with scikit-learn; no GPU is required or used.",
+      "kind": "literature",
+      "locator": "L057"
+    }
+  ],
+  "note_scope": "Claims are anchored to exact manuscript sentences (kind=literature) so the gate can verify coverage; experimental support is declared per-experiment above and limited to CPU reruns and a synthetic NC audit."
+}

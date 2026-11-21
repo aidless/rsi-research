@@ -1,0 +1,23 @@
+{
+  "schema": "figure-trace-manifest/1",
+  "paper": "paper_flattened.tex",
+  "artifacts": [
+    {
+      "artifact_id": "tab:system-description"
+    }
+  ],
+  "figure_table_trace": [
+    {
+      "artifact_id": "tab:system-description",
+      "source_data": "artifacts/result_linear_seed0.json",
+      "transformation": "artifacts/p2_fold_ci.json",
+      "caption_claim": "System description: Bi-Level PEPA components mapped to AIDE\\textsuperscript{2}.",
+      "supported_manuscript_claims": [
+        "We instantiate Bi-Level PEPA on AIDE\\textsuperscript{2} as the primary specimen. The instantiation is evidence-anchored: every component of our framework ties to either a publicly disclosed element of AIDE protocol or an audit finding from our source-code review."
+      ],
+      "limitations": [
+        "We have not validated Bi-Level PEPA on any system other than AIDE\\textsuperscript{2}. Cross-system validation on RL-based prompt search or AutoML-Zero extensions is open future work."
+      ]
+    }
+  ]
+}

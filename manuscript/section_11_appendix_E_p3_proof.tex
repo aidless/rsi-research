@@ -1,0 +1,61 @@
+% Section 11 -- Appendix E: Formal Statement of P3 (Audit-Channel Capacity Equivalence)
+
+\section*{Appendix E: Formal Statement of P3}
+\addcontentsline{toc}{section}{Appendix E: Formal Statement of P3}
+
+This appendix gives a formal statement of P3 (the audit-channel capacity equivalence of \S3.4). P3 is structurally different from P1 and P2: where P1 is a noise-bounded sample-complexity statement and P2 is a game-theoretic impossibility, P3 is a definitional equivalence. The full empirical falsification requires a 4-condition $\times$ 30-step ablation on a real AIDE\textsuperscript{2}-class system (deferred to future work, see \S6.5). This appendix provides the precise mathematical formulation and a partial proof of the no-empirical-loophole direction.
+
+\subsection*{E.1 Setup and Notation}
+
+Recall from \S3.3 that the audit channel $\alpha$ is a function $\alpha : Q \to \text{AuditLog}$ that mediates information flow between inner and outer loops. We define the \textbf{audit-channel capacity} as
+\[
+C(\alpha) := \log_2 |\,\text{Img}(\alpha)\,| - H(\alpha(Q) \mid \mu_{\text{priv}}, \mathcal{H}_{\text{pub}}),
+\]
+the number of distinct audit-log entries that $\alpha$ can write, minus the mutual information between $\alpha$'s output and the joint $\mu_{\text{priv}}/\mathcal{H}_{\text{pub}}$ state. This is the standard Shannon-capacity analog, restricted to the operational event space.
+
+We define the \textbf{anti-reward-hacking rate} as
+\[
+r(\alpha) := \mathbb{P}\big[\,\mu_{\text{priv}}(\Lambda_t) \text{ is gameable by } \Lambda\,\big]
+\]
+for a system with audit channel $\alpha$. Here ``gameable'' means that the realized $\mu_{\text{priv}}^t$ is not the intended private score (e.g., due to LLM-judge prompt injection, eval-script monkey patch, or other audit-channel violations).
+
+\subsection*{E.2 Main Equivalence (P3 Statement)}
+
+\begin{conjecture}[P3: Audit-channel capacity equivalence --- falsifiable conjecture, not theorem]
+For any bi-level RSI system, the anti-reward-hacking rate $r(\alpha)$ and the audit-channel capacity $C(\alpha)$ are related by
+\[
+r(\alpha) = 1 - \frac{C(\alpha) - C_0}{C_{\max} - C_0},
+\]
+where $C_0$ is the minimum capacity (zero auditing) and $C_{\max}$ is the maximum capacity (full TEE-isolated audit). Equivalently, the reward-hacking rate is monotonically decreasing in $C(\alpha)$ on $[C_0, C_{\max}]$.\footnote{\textbf{Honest status}: this is a \emph{falsifiable conjecture}, not a theorem. The DDB-Drill protocol (\S E.5) operationalizes the falsification; we have not executed it on a real system. We name it \emph{conjecture} in line with TMLR\'s distinction between theorems and conjectures, and in recognition that the operationalization of $C(\alpha)$ remains open. The full 4-condition $\times$ 30-step ablation is open future work, blocked on AIDE85 lineage release.} \qed
+\end{conjecture}
+
+\subsection*{E.3 Partial Proof (no-loophole direction)}
+
+\textit{Proof sketch of the $r \to 0$ implication.} Consider an audit channel $\alpha$ of capacity $C(\alpha) = C_{\max}$, i.e., one that records all system state transitions in a TEE-isolated append-only log. By the information-theoretic definition, $\alpha$'s output is conditionally independent of $\mu_{\text{priv}}$ and $\mathcal{H}_{\text{pub}}$ (otherwise the inner loop could not be isolated from $\alpha$'s output). Then any attempt by $\Lambda$ to game $\mu_{\text{priv}}$ via a code mutation must be visible in the audit log, and the outer-loop retention gate can detect it by cross-referencing the audit log against the new code's $\mu_{\text{priv}}$ behavior. Detection leads to rejection, so $r(\alpha) \to 0$ as $C(\alpha) \to C_{\max}$.
+
+\textit{Proof sketch of the $C \to 0$ implication.} Consider an audit channel $\alpha$ of capacity $C(\alpha) = C_0$, i.e., one that records no system state. The inner-loop optimizer $\Lambda$ is then unconstrained: it can mutate any code, including the private-score evaluator, without detection. The reward-hacking rate is then the probability of the inner loop discovering such a mutation, which for a sufficiently capable $\Lambda$ approaches 1 in the limit of exploration. So $r(\alpha) \to 1$ as $C(\alpha) \to C_0$.
+
+The intermediate values of $C(\alpha) \in (C_0, C_{\max})$ correspond to partial audits (e.g., AIDE\textsuperscript{2}'s L1, L2, L3 layers in \S4.2), which are intermediate reward-hacking rates. The monotonicity claim in the theorem is empirical; the full formal proof requires a Shannon-capacity lower bound for each $\alpha$-class, which is beyond the scope of this paper. \hfill$\square$
+
+\subsection*{E.4 Operationalization of $\alpha$-Capacity}
+
+For empirical falsification, we operationalize $C(\alpha)$ as the number of distinct filter rules in the audit channel's regex-pattern set, plus the entropy of the cryptographic key (if any) used to sign the log. The 4-condition $\times$ 30-step ablation of \S3.4 P3 corresponds to:
+\begin{itemize}
+    \item \textbf{(i) no-$\alpha$}: $C(\alpha) = 0$ (no audit, $r$ should be highest)
+    \item \textbf{(ii) prompt-$\alpha$ only}: $C(\alpha) = $ small (LLM-judge layer, $r$ should be moderate)
+    \item \textbf{(iii) hard-coded $\alpha$}: $C(\alpha) = $ moderate (regex + type-check, $r$ should be lower)
+    \item \textbf{(iv) cryptographic $\alpha$}: $C(\alpha) = $ maximal (TEE-isolated, $r$ should be lowest)
+\end{itemize}
+
+\subsection*{E.5 DDB-Drill: Inner-Loop Attack Simulation}
+
+As an immediate, materially easier first step toward empirical P3 verification, \texttt{p3\_drill/\allowbreak drill\_design.md} (companion code) specifies an inner-loop attack simulation that plants a traceback-injected prompt payload via the \texttt{sys.path.append} mechanism (\S4.2 row 5) and measures the impact on the LLM-judged metric.value (F1). The expected outcome, on which we are willing to be challenged, is: \textbf{if audit-channel capacity (here, the LLM judge's resistance to prompt injection) is the load-bearing claim of P3, then injection attacks should measurably increase the reward-hacking rate as measured by the absolute difference between the LLM-judged metric value and the true metric value}. The simulation produces (i) attack success rate over 100 trials, (ii) Cohen's $d$ for injection vs no-injection, and (iii) failure modes that future work would need to address. The companion \texttt{p3\_drill/\allowbreak drill\_design.md} document is the formal protocol; this paragraph is the paper-level summary of the design. The simulation runs in $\sim$5 seconds per trial on commodity hardware; the formal 4-condition $\times$ 30-step ablation remains the gold standard and is open future work.
+
+\subsection*{E.6 Limitations}
+
+The P3 statement has three limitations:
+\begin{enumerate}
+    \item The $C_{\max}$ value depends on the operational definition of the audit channel. For TEE-based $\alpha$, $C_{\max}$ is effectively infinite (theoretically); for practical systems, it is bounded by the LLM-judge token cost or the cryptographic key size.
+    \item The monotonicity of $r(\alpha)$ is empirical, not derived from a Shannon-capacity lower bound. A more rigorous statement would require a precise capacity lower bound for each $\alpha$-class.
+    \item The 4-condition ablation of \S3.4 P3 requires forcible disabling of AIDE\textsuperscript{2}'s L1/L2/L3 layers, which is not possible with the published AIDE\textsuperscript{2} source. The DDB-Drill protocol (\S E.5) is the immediate first step, but a full empirical P3 verification awaits a from-scratch AIDE\textsuperscript{2} reproduction with auditable $\alpha$ layer.
+\end{enumerate}

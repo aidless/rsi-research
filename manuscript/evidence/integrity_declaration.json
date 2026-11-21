@@ -1,0 +1,189 @@
+{
+ "schema": "integrity-declaration/1",
+ "paper": "paper_flattened.tex",
+ "paper_type": "empirical",
+ "declaration_date": "2026-11-19",
+ "declared_context": "Auditable bi-level RSI framework: formalization (PDP/PEP/PAP) plus three CPU-only empirical instantiations (P1 power, P2 meta-predictor falsification, P3 synthetic drill) and an NC model-free audit of the scorer. No GPU, no LLM judge key; all numbers from rerun logs/JSON.",
+ "results": [
+  {
+   "claim": "P1 outer-loop correlation: ESS-corrected power at rho=0, N_inner=5 (AR(1) noise, d=0.5)",
+   "value": 0.13,
+   "value_kind": "effect_size",
+   "log": "run-logs/p1_outer_loop.log",
+   "exit_code": 0,
+   "warnings": 0,
+   "evidence": "python3 p1_drill/outer_loop_correlation.py --out <iso>; decision_row[0].ess_corr_power=0.13 in artifacts/p1_power_results.json; verdict=P1 supported.",
+   "digest_scope": "sha256 of artifacts/p1_power_results.json (65ecf8b5...) from the canonical source tree"
+  },
+  {
+   "claim": "P2 meta-predictor canonical single-split test AUC (linear, seed 0, n=1000)",
+   "value": 0.997,
+   "value_kind": "effect_size",
+   "log": "run-logs/p2_mu_priv.log",
+   "exit_code": 1,
+   "exit_code_semantics": "verdict",
+   "exit_contract": "exit_contract_p2.md",
+   "warnings": 0,
+   "evidence": "python3 p2_falsification/mu_priv_meta_predictor.py --backend linear --n_agents 1000 --seed 0; test_auc_roc=0.997 in artifacts/result_linear_seed0.json; exit 1 is the falsification verdict, see exit_contract_p2.md.",
+   "digest_scope": "sha256 of artifacts/result_linear_seed0.json (d9d87b5a...) from the canonical source tree"
+  },
+  {
+   "claim": "NC model-free audit: honest external-anchor scorer passes with zero selection error",
+   "value": 0.0,
+   "value_kind": "count",
+   "log": "runs/nc/nc_audit.json",
+   "exit_code": 0,
+   "warnings": 0,
+   "evidence": "model_free_audit over 60 probe weights anchored to ContextualTask(seed=100); honest scorer PASS se=0 gap=0 sat=0; random proxy se=0.5475 -> SELECTION_CORRUPTED; padding gap=0.27 -> OPTIMISTIC_GAP.",
+   "digest_scope": "sha256 of runs/nc/nc_audit.json (9cbcc488...) produced this session"
+  }
+ ],
+ "claim_numbers": [
+  {
+   "text": "canonical single-split test AUC 0.9970 (linear)",
+   "value": 0.997,
+   "artifact": "artifacts/result_linear_seed0.json",
+   "field": "test_auc_roc"
+  },
+  {
+   "text": "rank correlation 0.9908",
+   "value": 0.9908,
+   "artifact": "artifacts/result_linear_seed0.json",
+   "field": "test_rank_corr"
+  },
+  {
+   "text": "10-fold CV linear mean AUC 0.9957",
+   "value": 0.9957,
+   "artifact": "artifacts/p2_fold_ci.json",
+   "field": "models.Linear.mean"
+  },
+  {
+   "text": "10-fold CV gradient-boosting mean AUC 0.9951",
+   "value": 0.9951,
+   "artifact": "artifacts/p2_fold_ci.json",
+   "field": "models.GradientBoosting.mean"
+  },
+  {
+   "text": "ESS-corrected power 0.13 under rho=0",
+   "value": 0.13,
+   "artifact": "artifacts/p1_power_results.json",
+   "field": "decision_row.0.ess_corr_power"
+  },
+  {
+   "text": "random-proxy selection error 0.5475",
+   "value": 0.5475,
+   "artifact": "runs/nc/nc_audit.json",
+   "field": "random_proxy.selection_error"
+  }
+ ],
+ "citations": [
+  {
+   "key": "good1965speculations",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "yudkowsky2008artificial",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "omohundro2008basic",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "bostrom2014superintelligence",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "steinhardt2023secret",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "silver2017mastering",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "silver2018alphazero",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "real2020automl",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "romeraparedes2023mathematical",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "wang2023voyager",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "nist2014abac",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "bandhakavi2008cedar",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "cncf2021opa",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "weco2024specbench",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "skalse2022rewardhacking",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "gao2023rewardhackingllms",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "weco2024aide",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "anon2026bi",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  },
+  {
+   "key": "anon2026aosv8",
+   "verdict": "BIB_PRESENT",
+   "receipt": "稿件 references.bib 条目存在，正文引用一致"
+  }
+ ],
+ "methods": {
+  "section_heading": "What We Have Shown",
+  "config": "config_method.json"
+ },
+ "unexpected_claims": [],
+ "shortcut": {
+  "risk": "none",
+  "note": "P2 is explicitly a synthetic self-confirmation demonstration (downgraded to directional), P1 is a power calculation, P3 a synthetic injection drill; no predictive claim rests on an unexcluded shortcut."
+ },
+ "frame_lock": {
+  "would_change_question": false,
+  "explained_despite": "Discovering that the P2 meta-predictor AUC is a generator identity does not change the question (how to make the audit channel non-gameable); it sharpens the answer by motivating the external-anchor NC guard, which is the contribution."
+ }
+}

@@ -1,0 +1,252 @@
+% BibTeX bibliography for Bi-Level PEPA paper
+% Author-year style; full author lists and complete metadata for each entry.
+% Duplicates removed; missing entries (Skalse 2022, Gao 2023, Bostrom 2014, Omohundro 2008)
+% added to support §2.1 and §2.4.
+
+% --- §1 / §2: RSI history and safety literature ---
+
+@article{good1965speculations,
+  author = {Good, I. J.},
+  title  = {Speculations Concerning the First Ultraintelligent Machine},
+  journal = {Advances in Computers},
+  volume  = {6},
+  pages   = {31--88},
+  year    = {1965},
+  publisher = {Elsevier},
+  note   = {Original formalization of "intelligence explosion"}
+}
+
+@incollection{yudkowsky2008artificial,
+  author    = {Yudkowsky, Eliezer},
+  title     = {Artificial Intelligence as a Positive and Negative Factor in Global Risk},
+  booktitle = {Global Catastrophic Risks},
+  editor    = {Bostrom, Nick and {Cirkovic}, Milan M.},
+  pages     = {308--345},
+  year      = {2008},
+  publisher = {Oxford University Press},
+  note      = {Critical perspective on RSI and AGI risks}
+}
+
+@book{bostrom2014superintelligence,
+  author    = {Bostrom, Nick},
+  title     = {Superintelligence: Paths, Dangers, Strategies},
+  year      = {2014},
+  publisher = {Oxford University Press},
+  note      = {Canonical AGI/ASI safety reference; Chapter 4 discusses intelligence explosion dynamics}
+}
+
+@misc{omohundro2008basic,
+  author       = {Omohundro, Stephen M.},
+  title        = {The Basic {AI} Drives},
+  howpublished = {Self-published manuscript; later published in \emph{Artificial General Intelligence} (Springer, 2008)},
+  year         = {2008},
+  note         = {Formalization of instrumental convergence and self-preservation in advanced AI systems}
+}
+
+@misc{steinhardt2023secret,
+  author       = {Steinhardt, Jacob},
+  title        = {The Secret Threat of Recursive Self-Improvement},
+  howpublished = {Substack blog post; cited 2026-07-16},
+  year         = {2023},
+  note         = {\url{https://jsteinhardt.substack.com/p/the-secret-threat-of-recursive-self-improvement}; enumerates 7 operational definitions of RSI}
+}
+
+% --- §2.2: AIDE / AIDE^2 and bi-level RSI primary source ---
+
+@inproceedings{christiano2017deep,
+  author    = {Christiano, Paul F. and Leike, Jan and Brown, Tom B. and Martic, Miljan and Legg, Shane and Amodei, Dario},
+  title     = {Deep reinforcement learning from human preferences},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2017},
+  pages     = {4299--4307},
+  note      = {Foundational RLHF reference; the reward model is the inner-loop analog of $\mu_{	ext{priv}}$ in our framework, and the LLM-judge + outer-loop pattern in AIDE	extsuperscript{2} directly extends Christiano-style preference learning}
+}
+
+@misc{weco2024aide,
+  author       = {Jiang, Zhengyao and Schmidt, Dominik and Srikanth, Dhruv and Xu, Dixing and Kaplan, Ian and Jacenko, Deniss and Wu, Yuxiang},
+  title        = {{AIDE}: {AI}-Driven Exploration in the Space of Code},
+  howpublished = {arXiv preprint},
+  year         = {2024},
+  archivePrefix = {arXiv},
+  eprint       = {2502.13138},
+  primaryClass = {cs.AI},
+  note         = {Original AIDE paper; predecessor to AIDE\textsuperscript{2}; ICML 2025 AutoML workshop}
+}
+
+@misc{weco2026aide2,
+  author       = {{Weco AI}},
+  title        = {{AIDE}\textsuperscript{2}: First Evidence of Recursive Self-Improvement},
+  howpublished = {Weco AI Blog; cited 2026-07-19},
+  year         = {2026},
+  note         = {\url{https://www.weco.ai/blog/first-evidence-of-recursive-self-improvement}; technical report and AIDE85 lineage pending as of 2026-07-19}
+}
+
+@misc{weco2024specbench,
+  author       = {{Weco AI}},
+  title        = {{SpecBench}: Measuring Reward Hacking},
+  howpublished = {Weco AI Blog},
+  year         = {2024},
+  note         = {\url{https://www.weco.ai/blog/specbench}; empirical study of validation/held-out gaps and reward-hacking rates underlying the AIDE\textsuperscript{2} 63\%$\to$42\%$\to$34\% observation}
+}
+
+% --- §2.3: Search in code and algorithm spaces ---
+
+@article{silver2017mastering,
+  author    = {Silver, David and Schrittwieser, Julian and Simonyan, Karen and Antonoglou, Ioannis and Huang, Aja and Guez, Arthur and Hubert, Thomas and Baker, Lucas and Lai, Matthew and Bolton, Adrian and others},
+  title     = {Mastering the Game of {Go} Without Human Knowledge},
+  journal   = {Nature},
+  volume    = {550},
+  number    = {7676},
+  pages     = {354--359},
+  year      = {2017},
+  publisher = {Nature Publishing Group},
+  note      = {AlphaGo Zero; foundational self-play system; conceptually analogous to single-loop RSI but with fixed architecture}
+}
+
+@article{silver2018alphazero,
+  author    = {Silver, David and Hubert, Thomas and Schrittwieser, Julian and Antonoglou, Ioannis and Lai, Matthew and Guez, Arthur and Lanctot, Marc and Sifre, Laurent and Kumaran, Dharshan and Graepel, Thore and others},
+  title     = {A General Reinforcement Learning Algorithm That Masters Chess, Shogi, and {Go} Through Self-Play},
+  journal   = {Science},
+  volume    = {362},
+  number    = {6419},
+  pages     = {1140--1144},
+  year      = {2018},
+  publisher = {American Association for the Advancement of Science},
+  note      = {AlphaZero; extends AlphaGo Zero to chess and shogi}
+}
+
+@inproceedings{real2020automl,
+  author    = {Real, Esteban and Aggarwal, Chen and Huang, Yanping and Le, Quoc V.},
+  title     = {{AutoML-Zero}: Evolving Machine Learning Algorithms From Scratch},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning},
+  year      = {2020},
+  volume    = {119},
+  pages     = {8007--8019},
+  publisher = {PMLR},
+  note      = {Single-loop evolutionary ML discovery; not bi-level but conceptually adjacent}
+}
+
+@article{romeraparedes2023mathematical,
+  author    = {Romera-Paredes, Bernardino and Barekatain, Mohammad and Novikov, Alexander and Balog, Mateusz and Kumar, Misha P. and Dupont, Emil and Ruiz, Francisco J. R. and {Ellenberg}, Jordan S. and Wang, Pengming and Fawzi, Omar and others},
+  title     = {Mathematical Discoveries from Program Search with Large Language Models},
+  journal   = {Nature},
+  volume    = {625},
+  number    = {7995},
+  pages     = {468--475},
+  year      = {2023},
+  publisher = {Nature Publishing Group},
+  note      = {FunSearch; LLM-based code-space search with single-loop evolution}
+}
+
+@misc{wang2023voyager,
+  author       = {Wang, Guanzhi and Xie, Yuqi and Jiang, Yunfan and Mandlekar, Ajay and Xiao, Chaowei and Zhu, Yuke and Fan, Linxi and Anandkumar, Anima},
+  title        = {{Voyager}: An Open-Ended Embodied Agent with Large Language Models},
+  howpublished = {arXiv preprint},
+  year         = {2023},
+  archivePrefix = {arXiv},
+  eprint       = {2305.16291},
+  primaryClass = {cs.AI},
+  note         = {LLM-based skill-library accumulation in Minecraft; lacks bi-level structure}
+}
+
+@misc{wang2024openhands,
+  author       = {Wang, Xingyao and Wang, Boxuan and Su, Mingyang and Yang, Junda and Chen, Kun and others},
+  title        = {{OpenHands}: An Open Platform for {AI} Software Developers as Generalist Agents},
+  howpublished = {arXiv preprint},
+  year         = {2024},
+  archivePrefix = {arXiv},
+  eprint       = {2407.16741},
+  primaryClass = {cs.CL},
+  note         = {Single-agent coding baseline; underperforms AIDE on MLE-Bench Lite}
+}
+
+% --- §2.4: Access control and policy architectures ---
+
+@techreport{nist2014abac,
+  author      = {Hu, Vincent C. and Ferraiolo, David and Kuhn, Rick and Schnitzer, Adam and Sandlin, Kenneth and Miller, Robert and Scarfone, Karen},
+  title       = {Guide to Attribute Based Access Control ({ABAC}) Definition and Considerations},
+  institution = {National Institute of Standards and Technology},
+  type        = {NIST Special Publication},
+  number      = {800-162},
+  year        = {2014},
+  note        = {Authoritative reference for PDP/PEP/PAP vocabulary}
+}
+
+@inproceedings{bandhakavi2008cedar,
+  author    = {Bandhakavi, Sruthi and Bhatt, Prithvi and Jani, Chintan and Prasad, Rutvik and Jaiswal, Akshay and Cukier, Michel and Sanders, William},
+  title     = {An Access Control Framework for {Policy} Specification and Evaluation over Multiple {Schema} Models},
+  booktitle = {Proceedings of the 17th USENIX Security Symposium},
+  year      = {2008},
+  pages     = {177--192},
+  publisher = {USENIX Association},
+  note      = {Cedar policy language with formal verification guarantees}
+}
+
+@misc{cncf2021opa,
+  author       = {{Cloud Native Computing Foundation}},
+  title        = {{Open Policy Agent}: A Cloud-Native Policy Engine},
+  howpublished = {Open source project},
+  year         = {2021},
+  note         = {\url{https://www.openpolicyagent.org/}; Rego declarative policy language; multi-PDP pattern industry reference}
+}
+
+% --- §2.5: AI-eval and reward hacking literature ---
+
+@misc{skalse2022rewardhacking,
+  author       = {Skalse, Joar and Krasheninnikov, Nikita and Hutter, Marcus and others},
+  title        = {Defining and Unifying Goodhart's Law Variants for Reward Hacking in Reinforcement Learning},
+  howpublished = {arXiv preprint},
+  year         = {2022},
+  archivePrefix = {arXiv},
+  eprint       = {2211.01985},
+  primaryClass = {cs.AI},
+  note         = {Formal taxonomy of Goodhart's Law variants in RL; directly relevant to P2's ungameability framing}
+}
+
+@misc{gao2023rewardhackingllms,
+  author       = {Gao, Leo and Schulman, John and Hilton, Jacob},
+  title        = {Scaling Laws for Reward Model Overoptimization},
+  howpublished = {arXiv preprint; earlier version in ICML 2023 Workshop},
+  year         = {2023},
+  archivePrefix = {arXiv},
+  eprint       = {2210.10760},
+  primaryClass = {cs.LG},
+  note         = {Empirical study of Goodhart's Law in RLHF; foundational reference for reward-hacking discussions}
+}
+
+% --- Companion material: author prior work ---
+
+@misc{anon2026aosv8,
+  author       = {{Anonymized}},
+  title        = {Agent OS Reference Architecture V1--V8},
+  howpublished = {Prior work (anonymized); V1--V7 released, V8 proposed},
+  year         = {2026},
+  note         = {Foundational for the Bi-Level PEPA instantiation; V1--V7 supply the 9-layer composition and 25 documented vulnerabilities that motivate $\alpha$ as a first-class object}
+}
+
+@misc{anon2026mmepc,
+  author       = {{Anonymized}},
+  title        = {Multi-Model Empirical Performance Calibration ({MM-EPC})},
+  howpublished = {Prior work (anonymized); TMLR submission series \#47--51},
+  year         = {2026},
+  note         = {Calibration and multi-agent consensus research line; prior empirical work informs the DDC simulator's AR(1) outer-loop model}
+}
+
+@misc{anon2026bi,
+  author       = {{Anonymized}},
+  title        = {Bi-Level {PEPA}: Reference Implementation and Reproducibility Package},
+  howpublished = {Companion repository},
+  year         = {2026},
+  note         = {[anonymized repository]; companion implementation with p2\_falsification, p1\_drill, p2\_drill, p3\_drill simulators and AIDE0 audit}
+}
+
+% --- Standard reference ---
+
+@book{russell2010aima,
+  author    = {Russell, Stuart and Norvig, Peter},
+  title     = {Artificial Intelligence: A Modern Approach},
+  edition   = {3rd},
+  year      = {2010},
+  publisher = {Prentice Hall},
+  note      = {POMDP formalism reference for single-agent RL comparison}
+}

@@ -1,0 +1,12 @@
+# ddc_results.txt  (D: ignition-test power, DDC = DDD-corrected)
+# Source: <DATA_ROOT>
+# verdict=P1 supported; rule: P1 falsified if ESS-corrected Power(N_inner=5, d=0.5) >= 0.8 for any rho >= 0
+# config: {"rho_grid": [0.0, 0.3, 0.5, 0.7, 0.9], "n_inner_grid": [1, 2, 5, 10, 50, 100], "n_reps": 1000, "seed": 42, "d": 0.5, "alpha": 0.05, "naive_test": "Welch t-test on raw AR(1) series (anti-conservative under rho>0)", "decision_test": "ESS-corrected z-test using sigma_eff = sigma*sqrt((1+rho)/(1-rho))/sqrt(N_inner)"}
+# generated_at=2026-08-09T14:44:32.471844+08:00
+# Columns: rho | naive_power | ess_corr_power | ess_corr_ci | n_eff  (N_inner=5)
+rho	naive_power	ess_corr_power	ess_corr_ci_lo	ess_corr_ci_hi	n_eff
+0.0	0.106	0.13	0.1106	0.1523	5.0
+0.3	0.182	0.075	0.0603	0.093	2.69
+0.5	0.282	0.047	0.0355	0.0619	1.67
+0.7	0.425	0.015	0.0091	0.0246	0.88
+0.9	0.662	0.0	0.0	0.0038	0.26

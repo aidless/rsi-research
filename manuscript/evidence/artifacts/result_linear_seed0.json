@@ -1,0 +1,12 @@
+{
+  "backend": "linear",
+  "n_train": 800,
+  "n_test": 200,
+  "train_mse": 0.0006102413171902299,
+  "test_mse": 0.0006846465403214097,
+  "test_auc_roc": 0.997,
+  "test_rank_corr": 0.9908002700067502,
+  "p2_falsified": true,
+  "p_value_proxy": 0.0,
+  "artifact_dir": "F:\\Research\\projects\\bi_level_pepa\\experiments\\p2_falsification\\artifacts"
+}

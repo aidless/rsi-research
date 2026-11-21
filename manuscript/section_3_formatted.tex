@@ -1,0 +1,76 @@
+% Section 3 -- Bi-Level PEPA Formalization
+
+\subsection{The Tuple Definition}
+
+We model a bi-level recursive self-improvement (RSI) system as a tuple $\mathbf{R} = (\Lambda, \Omega, \mu_{\text{pub}}, \mu_{\text{priv}}, \rho, B, \delta)$ operating on a discrete-time state space. Each component is a first-class object:
+
+\begin{itemize}
+    \item $\Lambda$ (inner-loop agent) is an executable code that, given a task $\tau$ and the agent's current public observation, produces a candidate solution $(\text{code}, \text{execution\_result})$.
+    \item $\Omega$ (outer-loop agent) is an executable code that, given the current inner-loop agent $\Lambda$ and the outer-loop's private observation, produces a rewritten inner-loop agent $\Lambda'$.
+    \item $\mu_{\text{pub}} : \text{Tasks} \times \Lambda \to \mathbb{R}$ is the \textit{public score} function, visible to $\Lambda$ and used as the inner-loop's optimization signal.
+    \item $\mu_{\text{priv}} : \text{Tasks} \times \Lambda \to \mathbb{R}$ is the \textit{private score} function, invisible to $\Lambda$ and used by $\Omega$ to decide whether to retain a rewritten agent.
+    \item $\rho : \Lambda \to \mathbb{R}^+$ is the cost function (USD per evaluation), and $B$ is the total budget constraint.
+    \item $\delta$ is the run-to-run noise distribution over $\mu_{\text{priv}}$; empirically in current systems $\delta \approx \mathcal{N}(0, \sigma^2_\mu)$ with $\sigma_\mu \approx 0.025$--$0.045$ as AIDE\textsuperscript{2} reports on individual inner-loop evaluations. The standard deviation for \textit{cross-candidate} comparisons (relevant to P1's ignition test) is structurally larger if inter-outer-loop correlation is non-trivial; we adopt $\sigma_\mu = 0.04$ as the benchmark and direct readers to \S4.3 for the cross-candidate derivation.
+\end{itemize}
+
+This tuple generalizes existing systems: in AIDE\textsuperscript{2}, $\Lambda$ = AIDE0 (a tree-search agent), $\Omega$ = AIDEhuman (a hand-tuned autonomous research agent), $\mu_{\text{pub}}$ = public scores visible to AIDE0 within MLE-Bench, $\mu_{\text{priv}}$ = held-out private scores, $\rho$ fixed at \$15/agent for WeatherBench 2, and $\sigma_\mu$ estimated from AIDE\textsuperscript{2}'s reported run-to-run noise.
+
+\subsection{Outer-Loop Transition Function}
+
+\subsubsection*{Notation}
+
+The paper uses the following notation consistently throughout. \textbf{System components.} $\Lambda$ --- inner-loop agent (the artifact generator); $\Omega$ --- outer-loop agent (the generator-of-the-generator); $\mu_{\text{pub}} : \text{Tasks} \times \Lambda \to \mathbb{R}$ --- public score function (visible to $\Lambda$); $\mu_{\text{priv}} : \text{Tasks} \times \Lambda \to \mathbb{R}$ --- private score function (visible only to $\Omega$, hidden from $\Lambda$); $\rho : \Lambda \to \mathbb{R}^+$ --- per-evaluation cost in USD; $B$ --- total budget constraint; $\delta \sim \mathcal{N}(0, \sigma^2_\mu)$ --- run-to-run noise on $\mu_{\text{priv}}$, with $\sigma_\mu \approx 0.04$ empirically estimated from AIDE\textsuperscript{2}'s protocol (\S3.1). \textbf{Core quantities.} $\alpha : Q \to \text{AuditLog}$ --- audit channel as a function from system state $Q$ to a sequentially-ordered, content-hashed log; $f : \mathcal{H}_{\text{pub}} \to [0,1]$ --- meta-predictor (an L2-regularized 16-dim linear regressor in this paper's instantiation); $C(\alpha) := \log_2 |\text{Img}(\alpha)| - H(\alpha(Q) | \mu_{\text{priv}}, \mathcal{H}_{\text{pub}})$ --- audit-channel capacity (Shannon-style); $r(\alpha)$ --- anti-reward-hacking rate (probability $\Lambda$ games $\mu_{\text{priv}}$); $\sigma^2_\mu = \mathrm{Var}(\mu_{\text{priv}})$ --- variance of $\mu_{\text{priv}}$ across the inner-loop evaluation suite. \textbf{Hyperparameters.} $\tau_t$ --- outer-loop retention threshold at step $t$ (non-increasing); $T$ --- total outer-loop steps; $n_{\text{inner}}$ --- inner-loop evaluations per $(\tau, s)$ pair; $N_{\text{outer}}$ --- inner-loop tasks used to estimate $\mathbb{E}[\mu_{\text{priv}}(\Omega_{\Lambda_t}) - \mu_{\text{priv}}(\Omega_{\text{human}})]$; $\rho$ (lower-case) --- lag-1 autocorrelation of the AR(1) outer-loop process (distinct from per-evaluation cost $\rho$ above; the meaning is local to context). \textbf{Frameworks.} PEPA --- Policy-Evaluation Pair Automaton (our framework); PDP/PEP/PAP --- Policy Decision Point / Policy Enforcement Point / Policy Administration Point (NIST 800-162 vocabulary).
+
+A standard outer-loop step (Weco's protocol) is:
+
+\begin{verbatim}
+For step t = 1, 2, ..., T:
+    1. $\Omega$ proposes $\Lambda_t = \Omega(\Lambda_{t-1}, \mu_{\text{priv}}$-history)
+    2. Evaluate $\Lambda_t$ on $N_{\text{inner}}$ inner-loop tasks
+    3. Compute $\mu_{\text{priv}}(\Lambda_t) :=$ mean over (task, seed) pairs
+    4. If $\mu_{\text{priv}}(\Lambda_t) > \mu_{\text{priv}}(\Lambda_{t-1}) - \epsilon_{\text{keep}}$:
+         retain $\Lambda_t$   ($\approx$ 1/10 accepted in AIDE\textsuperscript{2})
+       Else:
+         retain $\Lambda_{t-1}$ (rejected)
+\end{verbatim}
+
+Two properties of this protocol matter for our analysis. First, the selection gate is \textbf{hard}: agents below the threshold are not soft-penalized, they are rejected entirely. Second, the gate is \textbf{only on $\mu_{\text{priv}}$}, never on $\mu_{\text{pub}}$. This is what makes the system bi-level rather than single-level: $\mu_{\text{pub}}$ drives $\Lambda$'s optimization pressure, $\mu_{\text{priv}}$ drives $\Omega$'s selection pressure, and the asymmetry between them is load-bearing.
+
+A na\"ive reading would be that this protocol alone defines the system. It does not. Three structural questions about the protocol's implementation are left implicit, and --- as we argue below --- these implicit choices are exactly what determines whether Level-2 RSI is reachable.
+
+\subsection{The Audit Channel $\alpha$}
+
+We propose to elevate the \textbf{audit channel} $\alpha$ to a first-class component. Formally:
+\[
+\alpha : Q \to \text{AuditLog} \quad \text{(append-only, hash-chained)}
+\]
+where $Q$ is the system state space (containing $\Lambda$, $\Omega$, history, $\mu_{\text{pub}}$, $\mu_{\text{priv}}$, $\rho_{\text{used}}$) and AuditLog is a sequentially-ordered, content-hashed log of all transitions. The audit channel exposes three properties we treat as axioms for an auditable bi-level RSI:
+
+\begin{enumerate}
+    \item \textbf{Unobservable to $\Lambda$.} $\Lambda$ cannot read $\alpha$. This isolates the inner loop from policy-relevant telemetry that would otherwise leak through context windows.
+    \item \textbf{Read-restricted to $\Omega$.} $\Omega$ may read $\alpha$ only under an explicit capability that is itself auditable. The agent cannot consult its own audit trail without record.
+    \item \textbf{Append-only and hash-chained.} Any backdating attempt is detectable via hash mismatch. This is the storage integrity property that lets an external auditor trust the log.
+\end{enumerate}
+
+The novelty of our framework is that, to our knowledge, these three properties do not yet exist as formalized requirements in any public bi-level RSI system. AIDE\textsuperscript{2}'s published architecture has \textbf{three ad-hoc mechanisms} that approximate $\alpha$ but do not strictly satisfy the three properties on a strict reading. The L1 anti-overfitting instruction is a prompt-level hint (bypassable). The L2 output guard is a code-level filter (incomplete coverage; AIDE\textsuperscript{2} authors admit ``some of it is plain dead code''). The L3 statistical layer is documented but, per AIDE\textsuperscript{2}'s own report, contains a bug rendering it ineffective on AIDE85. None is hash-chained, none has read-access isolation, none defines what $\Omega$ is allowed to read. We take this pattern to be evidence that current systems treat the audit channel as plumbing rather than as a load-bearing infrastructure component. (See \S4.2 for the precise line-by-line audit grounding this claim.)
+
+\subsection{Three Falsifiable Predictions}
+
+The framework yields three predictions that distinguish it from informal accounts of bi-level RSI.
+
+\paragraph{P1 --- Ignition-test effect size is noise-bounded.}
+For any bi-level RSI with run-to-run noise $\sigma$ and outer-loop budget $T$, the ignition test (does $\Lambda_t$ make a better $\Omega$ than $\Lambda_{t-1}$?) has effect size upper-bounded by
+\[
+d_{\text{ignition}} \;\le\; \frac{\sigma_{\text{outer}}}{\sigma_\mu} \cdot \sqrt{\frac{T}{n_{\text{outer}}}} \cdot \delta_{\text{efficiency}}
+\]
+where $\sigma_{\text{outer}}$ has units of [score] measured on the \emph{outer-loop's} evaluation scale, $\sigma_\mu$ has units of [score] measured on the \emph{standardized} metric of \S3.1 (i.e., a per-evaluation standard deviation, adopted as $\sigma_\mu = 0.04$ throughout this paper); the left-hand side is dimensionless as required by Cohen's $d$; the right-hand side is dimensionally consistent: $([\text{score}]/[\text{score}]) \times \sqrt{1} \times [1] = [1]$. Here $n_{\text{outer}}$ is the number of inner-loop tasks used to estimate $\mu_{\text{priv}}(\Omega_\Lambda)$ and $\delta_{\text{efficiency}} \in (0, 1]$ is a system-specific constant capturing how much of the inner-loop variance enters the ignition comparison. Equivalently stated: the standardized effect size is bounded above by the ratio (outer-loop variance / standardized variance) times a noise-amplification factor $\sqrt{T/n_{\text{outer}}}$ times a system efficiency constant. For AIDE\textsuperscript{2}'s reported ignition test ($T = 100$ steps, $\sigma_\mu = 0.04$ per inner-loop evaluation on MLE-Bench, inner-loop sample size $n_{\text{outer}}$ not disclosed but estimated $\leq 5$ from AIDE\textsuperscript{2}'s discussion), the bound estimates $d_{\text{ignition}} \leq (\text{some [score] ratio}) \times \sqrt{20} \times \delta_{\text{efficiency}} \approx$ at most a few units of standardized effect size, \textit{if} the inner-loop variance is on the same order as the outer-loop signal --- which is precisely the empirical question (see \S4.3 for the quantitative amplification analysis). Falsification protocol: re-run ignition tests with $n_{\text{outer}} \in \{5, 10, 20, 50\}$ across $\geq 3$ seeds and report bootstrap 95\% confidence intervals on the standardized effect size; \textbf{P1 is falsified if any reported $d_{\text{ignition}}$ exceeds the predicted bound under the corresponding $\sigma$ values}.
+
+\paragraph{P2 --- Ungameable $\mu_{\text{priv}}$ is necessary for Level-2 RSI.}
+We formalize the claim as follows. Define a meta-predictor family as any measurable function $f : \mathcal{H}_{\text{pub}} \to [0,1]$ mapping public history to predicted private score; we say $\mu_{\text{priv}}$ is \textbf{predictable} if there exists $f$ in this family with expected $\ell^2$ loss $E[(f(H_{\text{pub}}) - \mu_{\text{priv}})^2] < \sigma^2_{\text{priv}} / 2$, where $\sigma^2_{\text{priv}}$ is the variance of $\mu_{\text{priv}}$. (The 1/2 threshold is conventional and arbitrary; we adopt it for definiteness.) P2 then states: any bi-level RSI in which $\mu_{\text{priv}}$ is predictable (in the above sense) cannot reach Level 2 --- i.e., cannot have improved $\Lambda$ simultaneously serve as improved $\Omega$ over consecutive outer-loop iterations. \textbf{Proof sketch.} Suppose $\mu_{\text{priv}}$ is predictable by some $f \in F$. Then $\Lambda$'s inner-loop optimizer can in principle minimize $(f(H_{\text{pub}}) - \mu_{\text{priv}})^2 + \alpha \cdot \text{utility}$ by gradient descent through the public-history representation, gaming $\mu_{\text{pub}}$ while targeting predicted $\mu_{\text{priv}}$. Outer-loop retention, gated on observed $\mu_{\text{priv}}$, retains variants whose predicted $\mu_{\text{priv}}$ is high; this in turn selects for $\Lambda$ structures whose private score is approximated by their public representation. The two-score gap, defined $\Delta = E[|\mu_{\text{priv}} - \mu_{\text{pub}}|]$, then increases monotonically over outer-loop steps under convexity of the predictor family and sub-Gaussian noise $\delta$. Once $\Delta > \sigma_\mu$, the outer loop can no longer distinguish a genuine improvement from a public-history prediction --- outer-loop retention fails to compound, ruling out Level 2. The full proof, including regularity conditions on $F$ and a lower bound on the rate at which $\Delta$ grows, is in Appendix C (formal proof using online learning theory, including three lemmas, the main theorem, and a numerical illustration). \textbf{Falsification protocol}: train a meta-predictor $f$ (e.g., 16-dim linear regression; see \S4.4) on $\Lambda$'s public history. If $\text{AUC}(f) > 0.7$, P2's predictability assumption is empirically confirmed and AIDE\textsuperscript{2}-class systems are \textit{plausibly} below Level 2. We emphasize ``plausibly'' because empirical predictability is necessary but not sufficient for P2 --- a system could be empirically predictable on the model class tested but not predictable on a richer family that captures the agent's actual reasoning.
+
+\paragraph{P3 --- Anti-reward-hacking capacity $\equiv$ audit-channel capacity \emph{(falsifiable conjecture; see Appendix E.5 for the formal statement and E.6 for the partial proof)}.}
+Observed reductions in reward-hacking rate (AIDE\textsuperscript{2} reports 63\% $\to$ 42\% $\to$ 34\% across AIDE0, AIDE47, AIDE85) are more parsimoniously described as evolution of the audit channel's filtering capacity than as emergent alignment. To make this falsifiable, we operationalize $\alpha$ concretely as the set of regex patterns over $\mu_{\text{priv}}$ computation that an agent cannot bypass without explicit capability. Falsification protocol: 4 conditions $\times$ 30 outer-loop steps each --- (i) no-$\alpha$, (ii) prompt-$\alpha$ only, (iii) hard-coded $\alpha$, (iv) cryptographic $\alpha$ --- and report reward-hacking rate trajectory. We instantiate P2 in a code skeleton (\texttt{[anonymized repository]/p2\_falsification}) calibrated to AIDE\textsuperscript{2}'s reported statistics; on synthetic data the meta-predictor achieves canonical $\text{AUC} = 0.9970$, falsifying P2 in the controlled setting (with the structural circularity of the generator disclosed in \S4.4). We emphasize that this is a synthetic baseline; the empirical P2 falsification awaits AIDE85's lineage release.
+
+\subsection{Limitations of the Formalization}
+
+We acknowledge three limitations. First, the framework is descriptive rather than constructive: PEPA offers vocabulary and predictions but does not improve an existing system directly. Closing the gap requires the architectural recommendations of \S5. Second, our proof of P2 assumes $\sigma$ is known and i.i.d., which may not hold across 100 outer-loop steps; sensitivity analysis is required. Third, P3's operationalization could be tautological if $\alpha$ is defined as ``whatever reduces reward hacking''; we address this by defining $\alpha$ concretely as a fixable filter on $\mu_{\text{priv}}$ computation, leaving room for empirical refutation.

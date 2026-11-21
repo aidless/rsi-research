@@ -1,0 +1,482 @@
+{
+  "schema": "experiment-provenance-report/1",
+  "intake_mode": "run_experiments",
+  "experiments_seen": [
+    "E-NC",
+    "E-P1",
+    "E-P2",
+    "E-P3"
+  ],
+  "claims": [
+    {
+      "claim_id": "L001",
+      "text": "\\item \\textbf{Three falsifiable predictions} (\\S3.4) that distinguish our framework from informal accounts of bi-level RSI: (P1) a closed-form effect-size bound for ignition tests under measurement noise, (P2) a proof-of-concept that $\\mu_{\\text{priv}}$ must be ungameable for Level-2 RSI, and (P3) an alternative explanation for observed anti-reward-hacking emergence.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L80"
+    },
+    {
+      "claim_id": "L002",
+      "text": "\\textbf{Key concept}: the \\emph{audit channel} $\\alpha$ between inner and outer loops is the load-bearing object; we argue that any bi-level RSI without a properly specified $\\alpha$ cannot reach Level-2 regardless of inner-loop sophistication.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L91"
+    },
+    {
+      "claim_id": "L003",
+      "text": "\\textbf{Three falsifiable predictions}: P1 (Appendix~C) gives a closed-form noise bound for the ignition test, with proof under i.i.d.\\ and AR(1) evaluation models; P2 (Appendix~D) shows that predictable $\\mu_{\\text{priv}}$ is sufficient to block Level-2 RSI, via three lemmas establishing gap monotonicity; P3 (Appendix~E) defines audit-channel capacity $C(\\alpha)$ and derives the relation $r(\\alpha) = 1 - (C(\\alpha) - C_0)/(C_{\\max} - C_0)$ under TEE-isolated audit.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L91"
+    },
+    {
+      "claim_id": "L004",
+      "text": "Steinhardt \\cite{steinhardt2023secret} (2023) enumerates 7 operational definitions in the literature and concludes that no single system has yet satisfied any of them under strict measurement criteria.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L101"
+    },
+    {
+      "claim_id": "L005",
+      "text": "We treat AIDE\\textsuperscript{2} as a \\emph{specimen} of bi-level RSI rather than a definitive proof of RSI.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L105"
+    },
+    {
+      "claim_id": "L006",
+      "text": "Second, the gate is \\textbf{only on $\\mu_{\\text{priv}}$}, never on $\\mu_{\\text{pub}}$.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L203"
+    },
+    {
+      "claim_id": "L007",
+      "text": "\\begin{enumerate} \\item \\textbf{Unobservable to $\\Lambda$.} $\\Lambda$ cannot read $\\alpha$.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L215"
+    },
+    {
+      "claim_id": "L008",
+      "text": "The agent cannot consult its own audit trail without record.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L217"
+    },
+    {
+      "claim_id": "L009",
+      "text": "(The 1/2 threshold is conventional and arbitrary; we adopt it for definiteness.) P2 then states: any bi-level RSI in which $\\mu_{\\text{priv}}$ is predictable (in the above sense) cannot reach Level 2 --- i.e., cannot have improved $\\Lambda$ simultaneously serve as improved $\\Omega$ over consecutive outer-loop iterations.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L235"
+    },
+    {
+      "claim_id": "L010",
+      "text": "\\textbf{Proof sketch.} Suppose $\\mu_{\\text{priv}}$ is predictable by some $f \\in F$.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L235"
+    },
+    {
+      "claim_id": "L011",
+      "text": "The full proof, including regularity conditions on $F$ and a lower bound on the rate at which $\\Delta$ grows, is in Appendix C (formal proof using online learning theory, including three lemmas, the main theorem, and a numerical illustration).",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L235"
+    },
+    {
+      "claim_id": "L012",
+      "text": "\\paragraph{P3 --- Anti-reward-hacking capacity $\\equiv$ audit-channel capacity \\emph{(falsifiable conjecture; see Appendix E.5 for the formal statement and E.6 for the partial proof)}.} Observed reductions in reward-hacking rate (AIDE\\textsuperscript{2} reports 63\\% $\\to$ 42\\% $\\to$ 34\\% across AIDE0, AIDE47, AIDE85) are more parsimoniously described as evolution of the audit channel's filtering capacity than as emergent alignment.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L237"
+    },
+    {
+      "claim_id": "L013",
+      "text": "To make this falsifiable, we operationalize $\\alpha$ concretely as the set of regex patterns over $\\mu_{\\text{priv}}$ computation that an agent cannot bypass without explicit capability.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L238"
+    },
+    {
+      "claim_id": "L014",
+      "text": "Second, our proof of P2 assumes $\\sigma$ is known and i.i.d., which may not hold across 100 outer-loop steps; sensitivity analysis is required.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L242"
+    },
+    {
+      "claim_id": "L015",
+      "text": "The P1 noise bound is non-trivially informative even at moderate $\\rho$; the test is provably underpowered for any plausible $\\rho > 0$ with $N_{\\text{inner}} = 5$.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L326"
+    },
+    {
+      "claim_id": "L016",
+      "text": "Both calibers are on CPU; no GPU is used.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L391"
+    },
+    {
+      "claim_id": "L017",
+      "text": "This solves the ``eval repair monkey patch'' class of issues: a rewrite that silently alters the evaluation pipeline cannot pass without an external reviewer noticing the drift.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L444"
+    },
+    {
+      "claim_id": "L018",
+      "text": "Where the cost is bearable, run $\\mu_{\\text{priv}}$ computation inside a Trusted Execution Environment (TEE) such that the inner-loop agent cannot observe private scores even via observation side-channels.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L456"
+    },
+    {
+      "claim_id": "L019",
+      "text": "Our P2 prediction requires $\\mu_{\\text{priv}}$ to be polynomially-impossible to compute from public history.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L487"
+    },
+    {
+      "claim_id": "L020",
+      "text": "\\textbf{Hedged causal language throughout}.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L513"
+    },
+    {
+      "claim_id": "L021",
+      "text": "We use ``consistent with'', ``directional'', and ``supports the framework'' rather than absolute causal wording.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L513"
+    },
+    {
+      "claim_id": "L022",
+      "text": "Claims are explicitly annotated by evidence tier so that reviewers can distinguish what is proven, what is simulation-supported, and what is a design suggestion:",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L522"
+    },
+    {
+      "claim_id": "L023",
+      "text": "The formal recommendations are conditional on the stated assumptions, datasets, and runtime settings, and are not universal safety assurances.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L561"
+    },
+    {
+      "claim_id": "L024",
+      "text": "(TMLR distinguishes position, methods, contribution, and survey papers; methods papers introduce a new formalism and instantiate it on at least one concrete system, which matches our structure.) We have not framed the paper as a definitive proof of architectural failure in any specific system; we have framed it as \\emph{useful vocabulary} for a field that has not yet developed it.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L605"
+    },
+    {
+      "claim_id": "L025",
+      "text": "The V8 \\S11 Resource Contracts (RC) abstraction binds each layer to a four-field specification: preconditions, postconditions, resource bounds, and audit-guarantee invariants.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L730"
+    },
+    {
+      "claim_id": "L027",
+      "text": "\\section*{Appendix C: Formal Proof of P1} \\addcontentsline{toc}{section}{Appendix C: Formal Proof of P1}",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L850"
+    },
+    {
+      "claim_id": "L028",
+      "text": "This appendix gives a complete proof of P1 (the ignition-test noise lower bound of \\S3.4) using elementary concentration inequalities and the AR(1) effective-sample-size calculation.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L853"
+    },
+    {
+      "claim_id": "L029",
+      "text": "\\subsection*{C.4 Proof under Assumption 1 (i.i.d.)}",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L891"
+    },
+    {
+      "claim_id": "L030",
+      "text": "\\textit{Proof.} The numerator of $d_{\\text{ignition}}$ is the difference of two means over $n_{\\text{outer}}$ i.i.d.\\ samples each.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L893"
+    },
+    {
+      "claim_id": "L031",
+      "text": "\\subsection*{C.5 Proof under Assumption 2 (AR(1))}",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L906"
+    },
+    {
+      "claim_id": "L032",
+      "text": "\\textit{Proof.} Under the AR(1) outer-loop correlation model, the $T$ outer-loop $\\Omega$-states have effective sample size \\[ n_{\\text{eff}} = \\frac{T (1 - \\rho)}{1 + \\rho} \\] in the standard AR(1) effective-sample-size formula (this is the variance inflation of the running mean).",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L908"
+    },
+    {
+      "claim_id": "L033",
+      "text": "\\item \\textbf{Empirical observation}: AIDE\\textsuperscript{2} reports ``$\\sim$20 steps vs.\\ $\\sim$40 steps'' with no statistical significance, which matches the bound: at $N_{\\text{outer}} = 5$, the test is provably underpowered for any plausible $\\rho \\in [0.5, 0.9]$.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L925"
+    },
+    {
+      "claim_id": "L035",
+      "text": "\\section*{Appendix D: Formal Proof of P2} \\addcontentsline{toc}{section}{Appendix D: Formal Proof of P2}",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L956"
+    },
+    {
+      "claim_id": "L036",
+      "text": "This appendix gives a complete proof of P2 (the ungameability claim of \\S3.4) using online-learning theory.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L959"
+    },
+    {
+      "claim_id": "L037",
+      "text": "The main text's \\S3.4.2 contained a proof sketch; the full argument is below.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L959"
+    },
+    {
+      "claim_id": "L038",
+      "text": "\\textbf{Assumption 4 (No-Information-Without-Causality).} The inner-loop optimizer $\\Lambda$ cannot directly observe $\\mu_{\\text{priv}}$; its only access to $\\mu_{\\text{priv}}$ is via $f_t(\\mathcal{H}_{\\text{pub}}^t)$ and the public score $\\mu_{\\text{pub}}^t$.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L975"
+    },
+    {
+      "claim_id": "L039",
+      "text": "\\textit{Proof.} By Assumption 4, $\\Lambda$ has no oracle access to $\\mu_{\\text{priv}}$.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L981"
+    },
+    {
+      "claim_id": "L040",
+      "text": "\\textit{Proof.} The retention gate uses $\\mu_{\\text{priv}}^t$ (Assumption 3).",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L985"
+    },
+    {
+      "claim_id": "L041",
+      "text": "\\textit{Proof.} We derive the gap dynamics in three steps.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L989"
+    },
+    {
+      "claim_id": "L042",
+      "text": "\\textit{Proof.} By Lemma 3, after $T_0 := c \\cdot \\sigma_\\mu^2 / \\Delta_{\\text{crit}}$ outer-loop steps (for some constant $c$ depending on the family $F$), the gap satisfies $\\Delta_{T_0} \\geq \\Delta_{\\text{crit}}$.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1022"
+    },
+    {
+      "claim_id": "L043",
+      "text": "The outer loop cannot, in this regime, distinguish a genuine improvement (a $\\Lambda$ with high $\\mu_{\\text{priv}}$ for the right reason) from a public-history prediction (a $\\Lambda$ with high $f_t$).",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1022"
+    },
+    {
+      "claim_id": "L044",
+      "text": "The proof relies on Assumptions 1--4, of which the most consequential is Assumption 1 (predictability).",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1026"
+    },
+    {
+      "claim_id": "L045",
+      "text": "Three other limitations: \\begin{enumerate} \\item The proof assumes i.i.d.\\ noise $\\delta$; in practice, $\\delta$ may drift across outer-loop steps.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1028"
+    },
+    {
+      "claim_id": "L046",
+      "text": "\\item The proof assumes the inner-loop optimizer is approximately a no-regret learner on $F$.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1031"
+    },
+    {
+      "claim_id": "L047",
+      "text": "\\item The proof treats $\\Omega$ as fixed; in practice, $\\Omega$ may also be modified (an additional outer-outer loop).",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1032"
+    },
+    {
+      "claim_id": "L048",
+      "text": "Extending the proof to $k$-level RSI is an open direction.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1032"
+    },
+    {
+      "claim_id": "L049",
+      "text": "With $c \\approx 50$ (the empirical no-regret constant for 16-dim linear regression), $T_0 \\approx 2$ outer-loop steps --- meaning the gap $\\Delta$ reaches $\\sigma_\\mu$ essentially immediately under the predicted $\\mu_{\\text{priv}}$, and the outer loop cannot accumulate Level-2 RSI signal.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1037"
+    },
+    {
+      "claim_id": "L050",
+      "text": "This matches AIDE\\textsuperscript{2}'s reported underpowering of the ignition test (\\S3.4) and the $\\S4.3$ DDC quantitative amplifier's finding that the test is provably underpowered at $N_{\\text{inner}} = 5$.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1037"
+    },
+    {
+      "claim_id": "L051",
+      "text": "Combined with the proof above, the empirical predictability of $\\mu_{\\text{priv}}$ on the linear class \\emph{would imply}, under the other regularity conditions, that a bi-level RSI agent using the same public-history representation fails to reach Level 2.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1041"
+    },
+    {
+      "claim_id": "L052",
+      "text": "This appendix provides the precise mathematical formulation and a partial proof of the no-empirical-loophole direction.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1049"
+    },
+    {
+      "claim_id": "L053",
+      "text": "\\subsection*{E.3 Partial Proof (no-loophole direction)}",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1075"
+    },
+    {
+      "claim_id": "L054",
+      "text": "\\textit{Proof sketch of the $r \\to 0$ implication.} Consider an audit channel $\\alpha$ of capacity $C(\\alpha) = C_{\\max}$, i.e., one that records all system state transitions in a TEE-isolated append-only log.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1077"
+    },
+    {
+      "claim_id": "L055",
+      "text": "\\textit{Proof sketch of the $C \\to 0$ implication.} Consider an audit channel $\\alpha$ of capacity $C(\\alpha) = C_0$, i.e., one that records no system state.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1079"
+    },
+    {
+      "claim_id": "L056",
+      "text": "The monotonicity claim in the theorem is empirical; the full formal proof requires a Shannon-capacity lower bound for each $\\alpha$-class, which is beyond the scope of this paper.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1081"
+    },
+    {
+      "claim_id": "L057",
+      "text": "All code is available at the project repository~\\cite{anon2026bi}: \\begin{itemize} \\item $\\mathtt{p2\\_falsification/}$ --- the meta-predictor module and its synthetic-data test; the canonical single-split rerun ($\\text{AUC}=0.9970$, seed 0) and 10-fold CV mean ($0.9957\\pm0.0027$, linear) are reproducible on CPU with scikit-learn; no GPU is required or used.",
+      "verdict": "ALIGNED",
+      "detail": "kind=literature：声明里显式记为文献/缺席声明（不强求实验关联，但已对账稿件原文）",
+      "experiment_ids": [],
+      "locator": "L1148"
+    }
+  ],
+  "undeclared_claims": [],
+  "overrides": [],
+  "unresolved_from_first_gate": [],
+  "prior_trustworthy": null,
+  "verdict_counts": {
+    "ALIGNED": 55,
+    "OVERSTATED": 0,
+    "NOT_SUPPORTED_BY_PROVENANCE": 0,
+    "PROVENANCE_INSUFFICIENT": 0,
+    "OVERRIDDEN": 0
+  },
+  "blocked": false,
+  "verdict": "PASS",
+  "external_facts": {
+    "schema": "external-fact-report/1",
+    "rows": [],
+    "blocked": false,
+    "verdict_counts": {
+      "SELF_CONTRADICTED": 0,
+      "CONFLICT": 0,
+      "REFUTED": 0,
+      "UNVERIFIED": 0,
+      "SUPPORTED": 0
+    },
+    "block_reasons": [],
+    "scope_note": "本槽只判「外部事实有没有被核过、核的结果对不对」，不判该事实本身"
+  },
+  "external_fact_blocked_claims": [],
+  "block_reasons": [],
+  "scope_note": "本闸只判 provenance 对不对，不评判实验本身对错（沿用 ARS 完整性门的边界）；外部事实只判「有没有被核过、核的结果对不对」，不判事实本身"
+}

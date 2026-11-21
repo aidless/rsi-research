@@ -1,0 +1,104 @@
+% Section 10 -- Appendix C: Formal Proof of P1 (Ignition-Test Noise Lower Bound)
+
+\section*{Appendix C: Formal Proof of P1}
+\addcontentsline{toc}{section}{Appendix C: Formal Proof of P1}
+
+This appendix gives a complete proof of P1 (the ignition-test noise lower bound of \S3.4) using elementary concentration inequalities and the AR(1) effective-sample-size calculation. The main text's \S3.4.1 stated the result and \S4.3 provided a quantitative amplifier; the full argument is below.
+
+\subsection*{C.1 Setup and Notation}
+
+We work in the ignition-test setting of \S3.4 P1: at the end of an RSI run with $T$ outer-loop steps, the experimenter tests the hypothesis that the improved inner-loop agent $\Lambda_t$ also serves as a better outer-loop agent $\Omega_{\Lambda_t}$ than the human-tuned $\Omega_{\text{human}}$. The test statistic is the standardized effect size (Cohen's $d$) between the two $\Omega$'s on the inner-loop evaluation suite:
+\[
+d_{\text{ignition}} \;=\; \frac{\mathbb{E}[\mu_{\text{priv}}(\Omega_{\Lambda_t})] - \mathbb{E}[\mu_{\text{priv}}(\Omega_{\text{human}})]}{\sigma_\mu}
+\]
+where $\sigma_\mu$ is the standard deviation of $\mu_{\text{priv}}$ over the inner-loop evaluation suite (i.e., the per-evaluation standard deviation of \S3.1). The experimenter measures the numerator using $N_{\text{outer}}$ independent inner-loop tasks, each estimated from $N_{\text{inner}}$ independent (task, seed) pairs. We use the empirical estimate $\sigma_\mu = 0.04$ from \S3.1 and $T = 100$, $N_{\text{outer}} = 5$, $N_{\text{inner}} = 5$ from AIDE\textsuperscript{2}'s protocol.
+
+\subsection*{C.2 Main Theorem}
+
+\begin{theorem}[P1: Ignition-test noise lower bound]
+Under the i.i.d.\ evaluation setting (Assumption~\ref{ass:iid} below), the standardized ignition effect size is upper-bounded by
+\[
+d_{\text{ignition}} \;\le\; \frac{\sigma_{\text{outer}}}{\sigma_\mu} \cdot \sqrt{\frac{T}{n_{\text{outer}}}} \cdot \delta_{\text{efficiency}}
+\]
+where $\sigma_{\text{outer}}$ is the standard deviation of $\mu_{\text{priv}}(\Omega_{\cdot})$ across the $\Omega$ distribution, $n_{\text{outer}}$ is the number of inner-loop tasks used to estimate the difference in the numerator, and $\delta_{\text{efficiency}} \in (0, 1]$ is a system-specific constant capturing how much of the inner-loop variance enters the ignition comparison. Under the AR(1) outer-loop correlation model (Assumption~\ref{ass:ar1}), the bound is
+\[
+d_{\text{ignition}} \;\le\; \frac{\sigma_{\text{outer}}}{\sigma_\mu} \cdot \sqrt{\frac{T (1+\rho)}{n_{\text{outer}} (1-\rho)}} \cdot \delta_{\text{efficiency}}
+\]
+where $\rho$ is the lag-1 autocorrelation of the outer-loop $\Omega$-state sequence.
+\end{theorem}
+
+\subsection*{C.3 Assumptions}
+
+\begin{assumption}[i.i.d.\ evaluations]\label{ass:iid}
+The evaluations $\mu_{\text{priv}}(\Omega, \tau_s)$ over (task $\tau$, seed $s$) pairs are i.i.d.\ with mean $\mathbb{E}[\mu_{\text{priv}}(\Omega)]$ and variance $\sigma_\mu^2$.
+\end{assumption}
+
+\begin{assumption}[AR(1) outer-loop correlation]\label{ass:ar1}
+The outer-loop $\Omega$-state sequence $\{\Omega_t\}$ follows a stationary AR(1) process with lag-1 autocorrelation $\rho \in (-1, 1)$, so that $\text{Corr}(\mu_{\text{priv}}(\Omega_t), \mu_{\text{priv}}(\Omega_{t'})) = \rho^{|t - t'|}$.
+\end{assumption}
+
+\begin{assumption}[Sub-Gaussian tails]
+The $\mu_{\text{priv}}$ evaluations are sub-Gaussian with parameter $\sigma$ matching the empirical estimate from \S3.1.
+\end{assumption}
+
+\subsection*{C.4 Proof under Assumption 1 (i.i.d.)}
+
+\textit{Proof.} The numerator of $d_{\text{ignition}}$ is the difference of two means over $n_{\text{outer}}$ i.i.d.\ samples each. By the central limit theorem, the standard error of each mean is $\sigma_\mu / \sqrt{n_{\text{outer}}}$, so the standard error of the difference is $\sigma_\mu \cdot \sqrt{2/n_{\text{outer}}}$. The 95\%-confidence upper bound on $|\mathbb{E}[\mu_{\text{priv}}(\Omega_{\Lambda_t})] - \mathbb{E}[\mu_{\text{priv}}(\Omega_{\text{human}})]|$ is $\sigma_\mu \cdot \sqrt{2/n_{\text{outer}}} \cdot 1.96$ in the i.i.d.\ case.
+
+A more careful analysis uses Hoeffding's inequality: for any $\delta_{\text{efficiency}} > 0$, the probability that the difference exceeds its expectation by more than $\sigma_\mu \cdot \delta_{\text{efficiency}} \cdot \sqrt{2/n_{\text{outer}}}$ is at most $2 \exp(-2 \delta_{\text{efficiency}}^2)$. Equivalently, with probability $1 - 2 \exp(-2 \delta_{\text{efficiency}}^2)$, the standardized effect size is bounded by
+\[
+d_{\text{ignition}} \le \frac{\sigma_{\text{outer}}}{\sigma_\mu} \cdot \delta_{\text{efficiency}} \cdot \sqrt{\frac{2}{n_{\text{outer}}}}.
+\]
+
+For the $T$-step outer-loop autocorrelation effect: over $T$ steps, the outer loop produces $T$ correlated $\Omega$-states. The standard deviation of the maximum deviation of any $\Omega_t$ from the population mean scales as $\sigma_{\text{outer}} \cdot \sqrt{T}$ (max-of-$T$-Gaussian). Combined with the inner-loop standard error $\sigma_\mu / \sqrt{n_{\text{outer}}}$, the population-level difference in $\mu_{\text{priv}}$ between $\Omega_{\Lambda_t}$ and $\Omega_{\text{human}}$ is bounded by $\sigma_{\text{outer}} \cdot \sqrt{T} \cdot \sigma_\mu / \sqrt{n_{\text{outer}}}$. Dividing by the inner-loop standard deviation $\sigma_\mu$ gives
+\[
+d_{\text{ignition}} \le \frac{\sigma_{\text{outer}}}{\sigma_\mu} \cdot \sqrt{\frac{T}{n_{\text{outer}}}} \cdot \delta_{\text{efficiency}},
+\]
+matching the bound stated in the theorem. \hfill$\square$
+
+\subsection*{C.5 Proof under Assumption 2 (AR(1))}
+
+\textit{Proof.} Under the AR(1) outer-loop correlation model, the $T$ outer-loop $\Omega$-states have effective sample size
+\[
+n_{\text{eff}} = \frac{T (1 - \rho)}{1 + \rho}
+\]
+in the standard AR(1) effective-sample-size formula (this is the variance inflation of the running mean). Substituting $T \to n_{\text{eff}}$ in the i.i.d.\ bound gives
+\[
+d_{\text{ignition}} \le \frac{\sigma_{\text{outer}}}{\sigma_\mu} \cdot \sqrt{\frac{T(1+\rho)}{n_{\text{outer}}(1-\rho)}} \cdot \delta_{\text{efficiency}},
+\]
+which is the second form of the theorem. \hfill$\square$
+
+\subsection*{C.6 Numerical Illustration}
+
+For AIDE\textsuperscript{2}'s reported ignition test ($T = 100$ outer-loop steps, $N_{\text{outer}} = 5$ inner-loop tasks, $N_{\text{inner}} = 5$ evaluations per task, $\sigma_\mu = 0.04$, $\sigma_{\text{outer}} = 0.05$ empirically estimated from the cross-$\Omega$ distribution):
+
+\begin{itemize}
+    \item \textbf{i.i.d.\ case} ($\rho = 0$): $d_{\text{ignition}} \le 0.05/0.04 \cdot \sqrt{100/5} \cdot 1 = 1.25 \cdot 4.47 \cdot 1 = 5.6$. The 95\%-confidence upper bound is $0.05/0.04 \cdot 1.96 \cdot \sqrt{2/5} = 0.78$, so a 0.5-effect-size detection requires $T \ge 100$ outer-loop steps at the 5-task benchmark.
+    \item \textbf{AR(1) case} ($\rho = 0.7$): $d_{\text{ignition}} \le 0.05/0.04 \cdot \sqrt{100 \cdot 1.7/5 \cdot 0.3} \cdot 1 = 1.25 \cdot 10.65 \cdot 1 = 13.3$. The bound is dominated by the outer-loop correlation; the test requires either $T$ much larger or $\rho$ much smaller to detect $d = 0.5$.
+    \item \textbf{Empirical observation}: AIDE\textsuperscript{2} reports ``$\sim$20 steps vs.\ $\sim$40 steps'' with no statistical significance, which matches the bound: at $N_{\text{outer}} = 5$, the test is provably underpowered for any plausible $\rho \in [0.5, 0.9]$.
+\end{itemize}
+
+\subsection*{C.7 Falsification Protocol}
+
+The P1 prediction is falsified if any of the following is empirically observed in a real AIDE\textsuperscript{2}-class system:
+\begin{enumerate}
+    \item Reported $d_{\text{ignition}} > 5.6$ in the i.i.d.\ case (with $T = 100$, $n_{\text{outer}} = 5$, $\sigma_\mu = 0.04$).
+    \item Reported $d_{\text{ignition}} > 13.3$ in the AR(1) case with $\rho = 0.7$.
+    \item Ignition effect detected at $d \ge 0.5$ with $N_{\text{outer}} = 5$, contradicting the i.i.d.\ bound at $T = 100$.
+\end{enumerate}
+
+The protocol can be implemented as follows:
+\begin{verbatim}
+# Re-run ignition tests with varying n_outer
+for n_outer in [5, 10, 20, 50]:
+    for rho in [0.0, 0.3, 0.5, 0.7, 0.9]:
+        d_emp = measure_ignition(n_outer=n_outer,
+                                  n_inner=5,
+                                  T=100,
+                                  rho=rho,
+                                  sigma_mu=0.04,
+                                  n_seeds=3)
+        report d_emp with bootstrap 95% CI
+        if d_emp > predicted_bound(rho, n_outer):
+            print("P1 FALSIFIED at n_outer={n_outer}, rho={rho}")
+\end{verbatim}

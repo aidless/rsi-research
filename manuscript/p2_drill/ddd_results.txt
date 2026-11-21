@@ -1,0 +1,10 @@
+# ddd_results.txt  (DDD: 5-model robustness table, P2 meta-predictor)
+# Source: <DATA_ROOT>
+# Protocol: 5 seeds x 10 folds (n_folds_total=50); 1000 agents; synthetic AIDE2-calibrated data
+# Columns: Model | AUC mean | AUC sd | ci_lo | ci_hi | min | max
+Model	AUC_mean	AUC_sd	ci_lo	ci_hi	min	max
+Linear	0.9957	0.0027	0.9897	0.9997	0.9876	1.0
+Ridge	0.9948	0.0029	0.9881	0.9987	0.9876	0.9996
+RandomForest	0.9953	0.0028	0.9892	0.9999	0.9884	1.0
+GradientBoosting	0.9951	0.0031	0.9871	0.9992	0.9856	0.9996
+MLP	0.9535	0.0213	0.9073	0.9844	0.9048	0.9892
